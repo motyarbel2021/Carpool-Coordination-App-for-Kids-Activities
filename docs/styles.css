@@ -1,4 +1,4 @@
-/* Custom CSS for Hebrew Transportation Coordination App - PWA Enhanced - UPDATED VERSION 1.0.4 */
+/* Custom CSS for Hebrew Transportation Coordination App - PWA Enhanced - AGGRESSIVE SCROLL FIX VERSION 1.0.8 */
 
 /* PWA and Mobile Optimizations */
 
@@ -411,4 +411,37 @@ select:focus {
 .force-update-check {
   /* This should make GitHub Pages update the file */
   content: 'Updated at Sat Aug 16 16:39:21 UTC 2025';
+  /* AGGRESSIVE MOBILE SCROLL FIX v1.0.8 */
+.mobile-safe-container {
+  min-height: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* Override ALL Tailwind height classes that might interfere */
+.min-h-screen,
+.h-screen,
+.h-full {
+  min-height: auto !important;
+  height: auto !important;
+}
+
+/* Make sure body and html allow scrolling */
+html, body {
+  height: auto !important;
+  min-height: auto !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+body.mobile-scroll-enabled {
+  height: auto !important;
+  min-height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+}
+
 }
