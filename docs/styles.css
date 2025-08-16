@@ -171,48 +171,71 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Critical Mobile Fix - Simple Approach */
+/* CRITICAL MOBILE FIX - FORCE SCROLLING TO WORK */
 @media (max-width: 768px) {
-  /* Remove any height restrictions */
+  /* FORCE remove height restrictions */
   html, body {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    position: relative !important;
   }
   
-  /* Allow normal document flow and scrolling */
+  /* FORCE scrolling to work */
   body {
-    overflow: auto; /* Changed from visible to auto */
-    position: relative;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overflow: auto !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    -webkit-overflow-scrolling: touch !important;
+    height: auto !important;
+    min-height: 100vh !important;
   }
   
-  /* App container should expand naturally */
+  /* FORCE app container to be scrollable */
   #root {
-    height: auto;
-    min-height: 100vh;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    position: relative !important;
   }
   
-  /* Ensure content has enough space to scroll */
+  /* FORCE content to be tall and scrollable */
   .main-content {
-    min-height: 100vh;
-    padding-bottom: 100px; /* Extra space for testing */
+    min-height: 200vh !important;
+    padding-bottom: 200px !important;
   }
   
-  /* Navigation should be fixed at bottom */
+  /* FORCE navigation to stay fixed */
   .fixed {
-    position: fixed;
-    z-index: 1000; /* Ensure it stays on top */
+    position: fixed !important;
+    z-index: 9999 !important;
   }
   
   .bottom-0 {
-    bottom: 0;
+    bottom: 0 !important;
   }
   
-  /* Debug: Add visible border to check container size */
+  /* VERY VISIBLE DEBUG STYLES */
   .max-w-md {
-    border: 2px solid red; /* Temporary - will remove after testing */
-    min-height: 150vh; /* Force content to be taller than viewport */
+    border: 10px solid red !important;
+    background: yellow !important;
+    min-height: 300vh !important;
+    overflow: visible !important;
+  }
+  
+  /* Add test content to force scrolling */
+  .max-w-md::after {
+    content: '🔧 DEBUG: אם אתה רואה את הטקסט הזה הCSS עובד! גלול למטה לבדיקה! 🔧';
+    display: block;
+    background: lime;
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+    margin: 50px 0;
+    text-align: center;
+    border: 5px solid blue;
   }
 }
 
