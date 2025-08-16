@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>יצירת אייקונים לאפליקציה</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            direction: rtl; 
+            text-align: center; 
+        }
+        .icon-canvas { 
+            border: 1px solid #ccc; 
+            margin: 10px; 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        .download-btn { 
+            background: #3b82f6; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚌 יצירת אייקונים לאפליקציית ההסעות</h1>
+    
+    <div id="icons-container">
+        <!-- Icons will be generated here -->
+    </div>
+    
+    <button onclick="generateAllIcons()" class="download-btn">
+        צור את כל האייקונים
+    </button>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.className = 'icon-canvas';
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#3b82f6');
+            gradient.addColorStop(1, '#1d4ed8');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Border radius effect (rounded corners)
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.fillStyle = 'black';
+            ctx.roundRect(0, 0, size, size, size * 0.15);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Bus icon (simplified)
+            ctx.fillStyle = 'white';
+            ctx.font = `${size * 0.4}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🚌', size/2, size/2);
+            
+            return canvas;
+        }
+        
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        function generateAllIcons() {
+            const container = document.getElementById('icons-container');
+            container.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const canvas = createIcon(size);
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = `
+                    <h3>Icon ${size}x${size}</h3>
+                    <div>${canvas.outerHTML}</div>
+                    <button onclick="downloadIcon(${size})" class="download-btn">
+                        הורד icon-${size}x${size}.png
+                    </button>
+                `;
+                container.appendChild(wrapper);
+            });
+        }
+        
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            downloadCanvas(canvas, `icon-${size}x${size}.png`);
+        }
+        
+        // Support for rounded rectangles
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+        
+        // Generate icons on page load
+        generateAllIcons();
+    </script>
+</body>
+</html>

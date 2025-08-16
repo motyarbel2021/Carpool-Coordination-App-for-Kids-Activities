@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אין חיבור לאינטרנט - ניהול הסעות החוג</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .offline-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .retry-btn {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+        <!-- Icon -->
+        <div class="mb-6">
+            <div class="offline-icon inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full">
+                <i class="fas fa-wifi text-3xl text-red-500"></i>
+            </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">
+            אין חיבור לאינטרנט
+        </h1>
+        
+        <!-- Message -->
+        <p class="text-gray-600 mb-6 leading-relaxed">
+            נראה שאין לך חיבור לאינטרנט כרגע. 
+            <br>
+            האפליקציה תעבוד במצב מוגבל עד שהחיבור יחזור.
+        </p>
+        
+        <!-- Status -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center justify-center text-yellow-800">
+                <i class="fas fa-exclamation-triangle ml-2"></i>
+                <span class="text-sm">מצב לא מקוון</span>
+            </div>
+        </div>
+        
+        <!-- Retry Button -->
+        <button onclick="retryConnection()" class="retry-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg mb-4">
+            <i class="fas fa-redo ml-2"></i>
+            נסה שוב
+        </button>
+        
+        <!-- Back to App Button -->
+        <button onclick="goToApp()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg">
+            <i class="fas fa-arrow-right ml-2"></i>
+            חזור לאפליקציה
+        </button>
+        
+        <!-- Tips -->
+        <div class="mt-8 text-right">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">💡 טיפים:</h3>
+            <ul class="text-xs text-gray-600 space-y-2">
+                <li>• בדוק את חיבור הWiFi או הסלולר</li>
+                <li>• נסה לרענן את הדף</li>
+                <li>• כמה תכונות עדיין עובדות במצב לא מקוון</li>
+            </ul>
+        </div>
+        
+        <!-- Connection Status -->
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <div id="connection-status" class="text-sm text-gray-500">
+                בודק חיבור...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Connection status checker
+        function updateConnectionStatus() {
+            const statusDiv = document.getElementById('connection-status');
+            if (navigator.onLine) {
+                statusDiv.innerHTML = '<i class="fas fa-wifi text-green-500 ml-1"></i> מחובר לאינטרנט';
+                statusDiv.className = 'text-sm text-green-600';
+            } else {
+                statusDiv.innerHTML = '<i class="fas fa-wifi text-red-500 ml-1"></i> לא מחובר לאינטרנט';
+                statusDiv.className = 'text-sm text-red-600';
+            }
+        }
+        
+        function retryConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                // Show temporary message
+                const btn = document.querySelector('.retry-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-times ml-2"></i> עדיין אין חיבור';
+                btn.classList.add('bg-red-600', 'hover:bg-red-700');
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }, 2000);
+            }
+        }
+        
+        function goToApp() {
+            window.location.href = './';
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            updateConnectionStatus();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+        
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Initial status check
+        updateConnectionStatus();
+        
+        // Periodic connection check
+        setInterval(updateConnectionStatus, 5000);
+        
+        // Auto-retry when back online
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'BACK_ONLINE') {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

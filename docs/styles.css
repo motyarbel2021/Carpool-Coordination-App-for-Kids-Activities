@@ -1,4 +1,6 @@
-/* Custom CSS for Class Scheduler App */
+/* Custom CSS for Hebrew Transportation Coordination App - PWA Enhanced */
+
+/* PWA and Mobile Optimizations */
 
 /* RTL support improvements */
 [dir="rtl"] {
@@ -42,6 +44,133 @@
 
 .gradient-green {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Mobile Touch Optimizations */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  button, .btn, .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* Input fields */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px;
+  }
+  
+  /* Navigation improvements */
+  .bottom-navigation {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+  
+  /* Card spacing */
+  .card, .bg-white {
+    margin: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  /* Text sizing */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  
+  /* Scroll improvements */
+  .overflow-scroll, .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* PWA Specific Styles */
+@media (display-mode: standalone) {
+  /* Hide browser UI when installed as PWA */
+  body {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  /* Status bar adjustments */
+  .app-header {
+    padding-top: env(safe-area-inset-top, 20px);
+  }
+}
+
+/* Offline Indicators */
+.offline-indicator {
+  background: #ef4444;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 0.875rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.offline-indicator.show {
+  transform: translateY(0);
+}
+
+/* Loading States */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Enhanced Button Styles for Mobile */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  min-height: 48px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Swipe Gestures Support */
+.swipe-item {
+  touch-action: pan-y;
+  transition: transform 0.2s ease;
+}
+
+/* Better Focus States for Accessibility */
+button:focus, input:focus, textarea:focus, select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Improved Card Shadows for Depth */
+.card-elevated {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.card-elevated:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Chat message styling */

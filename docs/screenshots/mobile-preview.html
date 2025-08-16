@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפליקציית ההסעות - תצוגה מקדימה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .screen {
+            background: white;
+            border-radius: 30px;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .notch {
+            width: 200px;
+            height: 30px;
+            background: black;
+            border-radius: 0 0 20px 20px;
+            margin: 0 auto;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        .status-bar {
+            height: 44px;
+            background: #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .app-content {
+            padding: 20px;
+            height: calc(100% - 88px);
+            overflow-y: auto;
+        }
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: #000;
+            border-radius: 3px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8 flex items-center justify-center min-h-screen">
+    <div class="mobile-frame">
+        <div class="screen">
+            <div class="notch"></div>
+            <div class="status-bar">
+                <div>9:41</div>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-full"></i>
+                </div>
+            </div>
+            <div class="app-content">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">
+                        🚌
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2">ניהול הסעות החוג</h1>
+                    <p class="text-gray-600 text-sm">תיאום הסעות לחוגי ילדים</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-users text-blue-600 ml-3"></i>
+                            <h3 class="font-semibold text-gray-800">המשפחות שלי</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">צפייה וניהול של כל המשפחות הרשומות</p>
+                    </div>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-graduation-cap text-green-600 ml-3"></i>
+                            <h3 class="font-semibold text-gray-800">החוגים שלי</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">רשימת החוגים והילדים הרשומים</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-car text-purple-600 ml-3"></i>
+                            <h3 class="font-semibold text-gray-800">קבוצות הסעה</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">יצירה וניהול של קבוצות הסעה</p>
+                    </div>
+                    
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-clock text-orange-600 ml-3"></i>
+                            <h3 class="font-semibold text-gray-800">רשימת המתנה</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">ילדים הממתינים להסעה</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus ml-2"></i>
+                        הוסף חדש
+                    </button>
+                </div>
+            </div>
+            <div class="home-indicator"></div>
+        </div>
+    </div>
+</body>
+</html>
