@@ -1,5 +1,5 @@
 // Service Worker for Hebrew Transportation Coordination App
-const CACHE_NAME = 'hebrew-transport-app-v1.0.5-clean';
+const CACHE_NAME = 'hebrew-transport-app-v1.0.6-scroll-test';
 const OFFLINE_URL = './offline.html';
 
 // Files to cache for offline functionality

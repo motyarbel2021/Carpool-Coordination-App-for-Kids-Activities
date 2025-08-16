@@ -171,41 +171,39 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* MOBILE SCROLLING FIX - CLEAN VERSION */
+/* MOBILE SCROLLING FIX - DOCUMENT FLOW APPROACH */
 @media (max-width: 768px) {
-  /* Reset and prepare for scrolling */
-  * {
+  /* Allow normal document scrolling */
+  html, body {
+    height: auto;
+    overflow: visible;
     -webkit-overflow-scrolling: touch;
-  }
-  
-  html {
-    height: 100%;
-    overflow: hidden;
+    position: static;
   }
   
   body {
-    height: 100vh;
-    overflow: auto;
-    position: relative;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
   }
   
-  /* Make app container scrollable */
+  /* App container - normal document flow */
   #root {
     height: auto;
     min-height: 100vh;
     overflow: visible;
+    position: relative;
   }
   
-  /* Content should be taller than screen */
+  /* Force content to be much taller than viewport */
   .main-content {
-    min-height: calc(100vh + 300px);
-    padding-bottom: 120px;
+    min-height: 200vh; /* Double the viewport height */
+    padding-bottom: 150px;
     overflow: visible;
+    position: relative;
   }
   
-  /* Navigation fixes */
+  /* Navigation stays fixed at bottom */
   .fixed {
     position: fixed;
     z-index: 1000;
@@ -215,7 +213,7 @@
     bottom: 0;
   }
   
-  /* PWA install banner should be above navigation */
+  /* PWA install banner above navigation */
   .pwa-install-banner, #pwa-install-banner {
     position: fixed !important;
     bottom: 80px !important;
@@ -225,10 +223,25 @@
     margin: 0 !important;
   }
   
-  /* Remove debug styles - keep minimal border for testing */
+  /* Visible confirmation + force tall content */
   .max-w-md {
     border: 2px solid green;
-    min-height: calc(100vh + 500px);
+    min-height: 250vh; /* Extra tall to force scrolling */
+    position: relative;
+  }
+  
+  /* Add visible content at the bottom to test scrolling */
+  .main-content::after {
+    content: "🔧 בדיקת גלילה - אם אתה רואה את זה הגלילה עובדת! 🔧";
+    display: block;
+    background: lightblue;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 30px;
+    margin-top: 100vh;
+    text-align: center;
+    border: 3px solid blue;
   }
 }
 
