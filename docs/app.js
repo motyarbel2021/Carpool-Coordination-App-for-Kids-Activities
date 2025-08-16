@@ -2574,7 +2574,7 @@ const App = () => {
   };
 
   // Main render
-  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content min-h-screen pb-24' },
+  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content pb-24', style: { minHeight: 'auto' } },
     React.createElement('div', { className: 'p-4' },
       currentView === 'family-home' && React.createElement(FamilyHomePage),
       currentView === 'class-home' && React.createElement(ClassHomePage),

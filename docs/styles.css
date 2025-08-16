@@ -171,39 +171,38 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* MOBILE SCROLLING FIX - DOCUMENT FLOW APPROACH */
+/* MOBILE SCROLLING FIX - SIMPLE AND CLEAN */
 @media (max-width: 768px) {
   /* Allow normal document scrolling */
   html, body {
     height: auto;
-    overflow: visible;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
-    position: static;
   }
   
   body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
   }
   
-  /* App container - normal document flow */
+  /* App container - let it flow naturally */
   #root {
     height: auto;
-    min-height: 100vh;
     overflow: visible;
-    position: relative;
   }
   
-  /* Force content to be much taller than viewport */
+  /* Remove problematic min-height constraints */
   .main-content {
-    min-height: 200vh; /* Double the viewport height */
-    padding-bottom: 150px;
+    padding-bottom: 100px;
     overflow: visible;
-    position: relative;
   }
   
-  /* Navigation stays fixed at bottom */
+  /* Fix Tailwind's min-h-screen class that causes problems */
+  .min-h-screen {
+    min-height: auto !important;
+  }
+  
+  /* Navigation stays fixed */
   .fixed {
     position: fixed;
     z-index: 1000;
@@ -213,7 +212,7 @@
     bottom: 0;
   }
   
-  /* PWA install banner above navigation */
+  /* PWA install banner */
   .pwa-install-banner, #pwa-install-banner {
     position: fixed !important;
     bottom: 80px !important;
@@ -223,25 +222,9 @@
     margin: 0 !important;
   }
   
-  /* Visible confirmation + force tall content */
+  /* Test - remove green border once confirmed working */
   .max-w-md {
-    border: 2px solid green;
-    min-height: 250vh; /* Extra tall to force scrolling */
-    position: relative;
-  }
-  
-  /* Add visible content at the bottom to test scrolling */
-  .main-content::after {
-    content: "🔧 בדיקת גלילה - אם אתה רואה את זה הגלילה עובדת! 🔧";
-    display: block;
-    background: lightblue;
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 30px;
-    margin-top: 100vh;
-    text-align: center;
-    border: 3px solid blue;
+    border: 1px solid green;
   }
 }
 
