@@ -2574,7 +2574,16 @@ const App = () => {
   };
 
   // Main render
-  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content pb-24', style: { minHeight: 'auto' } },
+return React.createElement('div', { 
+  className: 'max-w-md mx-auto bg-gray-50 mobile-safe-container',
+  style: { 
+    minHeight: 'auto',
+    height: 'auto',
+    paddingBottom: '100px',
+    overflow: 'visible',
+    border: '3px solid red' // DEBUG MARKER v1.0.8
+  }
+},
     React.createElement('div', { className: 'p-4' },
       currentView === 'family-home' && React.createElement(FamilyHomePage),
       currentView === 'class-home' && React.createElement(ClassHomePage),
