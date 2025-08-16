@@ -1,4 +1,4 @@
-/* Custom CSS for Hebrew Transportation Coordination App - PWA Enhanced */
+/* Custom CSS for Hebrew Transportation Coordination App - PWA Enhanced - UPDATED VERSION 1.0.4 */
 
 /* PWA and Mobile Optimizations */
 
@@ -416,4 +416,10 @@ select:focus {
   .bottom-nav {
     padding-bottom: env(safe-area-inset-bottom);
   }
+}
+
+/* FORCED UPDATE - Sat Aug 16 16:39:21 UTC 2025 */
+.force-update-check {
+  /* This should make GitHub Pages update the file */
+  content: 'Updated at Sat Aug 16 16:39:21 UTC 2025';
 }
