@@ -83,39 +83,20 @@
     overscroll-behavior: contain;
   }
   
-  /* Prevent rubber band scrolling */
+  /* Better scrolling */
   body {
-    overscroll-behavior: none;
-    position: fixed;
+    position: relative;
     width: 100%;
-  }
-  
-  /* Content wrapper for internal scrolling */
-  .scroll-wrapper {
-    height: 100vh;
-    height: 100svh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
   }
 }
 
-/* PWA Specific Styles */
+/* PWA Specific Styles - Simplified */
 @media (display-mode: standalone) {
-  /* Hide browser UI when installed as PWA */
-  html, body {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile */
-    overflow: hidden;
+  /* When installed as PWA */
+  body {
     padding-top: env(safe-area-inset-top, 0);
     padding-bottom: env(safe-area-inset-bottom, 0);
-  }
-  
-  /* Main app container should fill screen and allow scrolling */
-  body > div, #root {
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
   
@@ -125,36 +106,31 @@
   }
 }
 
-/* Mobile Viewport Fixes */
+/* Simple Mobile Scrolling Fix */
 @media (max-width: 768px) {
-  /* Ensure full height on all mobile devices */
-  html, body {
-    height: 100vh;
-    height: 100svh; /* Small viewport height */
-    max-height: 100vh;
-    max-height: 100svh;
-    touch-action: pan-y; /* Allow vertical scrolling */
+  /* Basic mobile viewport */
+  html {
+    height: 100%;
   }
   
-  /* Main container scrolling */
   body {
-    overflow: hidden;
-  }
-  
-  body > div, #root {
-    height: 100vh;
-    height: 100svh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
   }
   
-  /* Fix for viewport height issues on iOS Safari */
+  /* App container should be scrollable */
+  #root {
+    min-height: 100vh;
+    overflow: visible;
+  }
+  
+  /* Content wrapper */
   .main-content {
     min-height: 100vh;
-    min-height: 100svh;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-bottom: 80px; /* Space for navigation */
   }
 }
 
@@ -190,40 +166,62 @@
   100% { background-position: -200% 0; }
 }
 
-/* iOS Safari Viewport Height Fix */
-@supports (-webkit-touch-callout: none) {
-  /* Only apply to iOS Safari */
-  html, body {
-    height: -webkit-fill-available;
-  }
-  
-  .scroll-wrapper {
-    height: -webkit-fill-available;
-  }
-  
-  .main-content {
-    min-height: -webkit-fill-available;
-  }
-}
-
-/* Android Chrome specific fixes */
-@media screen and (max-width: 768px) and (-webkit-device-pixel-ratio: 2) {
-  html {
-    height: stretch;
-  }
-}
-
-/* Better touch scrolling for all mobile devices */
+/* Basic touch improvements */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-.scroll-wrapper {
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
+/* Critical Mobile Fix - Simple Approach */
+@media (max-width: 768px) {
+  /* Remove any height restrictions */
+  html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+  }
+  
+  /* Allow normal document flow and scrolling */
+  body {
+    overflow: auto; /* Changed from visible to auto */
+    position: relative;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  
+  /* App container should expand naturally */
+  #root {
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  /* Ensure content has enough space to scroll */
+  .main-content {
+    min-height: 100vh;
+    padding-bottom: 100px; /* Extra space for testing */
+  }
+  
+  /* Navigation should be fixed at bottom */
+  .fixed {
+    position: fixed;
+    z-index: 1000; /* Ensure it stays on top */
+  }
+  
+  .bottom-0 {
+    bottom: 0;
+  }
+  
+  /* Debug: Add visible border to check container size */
+  .max-w-md {
+    border: 2px solid red; /* Temporary - will remove after testing */
+    min-height: 150vh; /* Force content to be taller than viewport */
+  }
+}
+
+/* PWA Mode - Keep it simple */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
 }
 
 /* Enhanced Button Styles for Mobile */

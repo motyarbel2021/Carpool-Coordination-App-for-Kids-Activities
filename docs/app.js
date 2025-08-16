@@ -2574,9 +2574,8 @@ const App = () => {
   };
 
   // Main render
-  return React.createElement('div', { className: 'scroll-wrapper' },
-    React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content pb-20' },
-      React.createElement('div', { className: 'p-4' },
+  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content min-h-screen pb-24' },
+    React.createElement('div', { className: 'p-4' },
       currentView === 'family-home' && React.createElement(FamilyHomePage),
       currentView === 'class-home' && React.createElement(ClassHomePage),
       currentView === 'availability' && React.createElement(AvailabilityPage),
@@ -2593,10 +2592,9 @@ const App = () => {
       currentView === 'admin-families' && React.createElement(AdminFamiliesPage),
       currentView === 'admin-classes' && React.createElement(AdminClassesPage),
       currentView === 'admin-reports' && React.createElement(AdminReportsPage)
-      ),
-      
-      React.createElement(Navigation)
-    )
+    ),
+    
+    React.createElement(Navigation)
   );
 };
 
