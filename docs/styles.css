@@ -171,71 +171,64 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* CRITICAL MOBILE FIX - FORCE SCROLLING TO WORK */
+/* MOBILE SCROLLING FIX - CLEAN VERSION */
 @media (max-width: 768px) {
-  /* FORCE remove height restrictions */
-  html, body {
-    height: auto !important;
-    max-height: none !important;
-    min-height: 100% !important;
-    overflow-x: hidden !important;
-    position: relative !important;
+  /* Reset and prepare for scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
   }
   
-  /* FORCE scrolling to work */
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+  
   body {
-    overflow: auto !important;
-    overflow-y: auto !important;
-    position: relative !important;
-    -webkit-overflow-scrolling: touch !important;
-    height: auto !important;
-    min-height: 100vh !important;
+    height: 100vh;
+    overflow: auto;
+    position: relative;
+    margin: 0;
+    padding: 0;
   }
   
-  /* FORCE app container to be scrollable */
+  /* Make app container scrollable */
   #root {
-    height: auto !important;
-    min-height: 100vh !important;
-    overflow: visible !important;
-    position: relative !important;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
   }
   
-  /* FORCE content to be tall and scrollable */
+  /* Content should be taller than screen */
   .main-content {
-    min-height: 200vh !important;
-    padding-bottom: 200px !important;
+    min-height: calc(100vh + 300px);
+    padding-bottom: 120px;
+    overflow: visible;
   }
   
-  /* FORCE navigation to stay fixed */
+  /* Navigation fixes */
   .fixed {
-    position: fixed !important;
-    z-index: 9999 !important;
+    position: fixed;
+    z-index: 1000;
   }
   
   .bottom-0 {
-    bottom: 0 !important;
+    bottom: 0;
   }
   
-  /* VERY VISIBLE DEBUG STYLES */
+  /* PWA install banner should be above navigation */
+  .pwa-install-banner, #pwa-install-banner {
+    position: fixed !important;
+    bottom: 80px !important;
+    z-index: 2000 !important;
+    left: 16px !important;
+    right: 16px !important;
+    margin: 0 !important;
+  }
+  
+  /* Remove debug styles - keep minimal border for testing */
   .max-w-md {
-    border: 10px solid red !important;
-    background: yellow !important;
-    min-height: 300vh !important;
-    overflow: visible !important;
-  }
-  
-  /* Add test content to force scrolling */
-  .max-w-md::after {
-    content: '🔧 DEBUG: אם אתה רואה את הטקסט הזה הCSS עובד! גלול למטה לבדיקה! 🔧';
-    display: block;
-    background: lime;
-    color: black;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 20px;
-    margin: 50px 0;
-    text-align: center;
-    border: 5px solid blue;
+    border: 2px solid green;
+    min-height: calc(100vh + 500px);
   }
 }
 
