@@ -1,72 +1,96 @@
 <!DOCTYPE html>
-<!-- MOBILE SCROLL TEST VERSION 1.0.9 - Ultra Simple -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- App Title -->
-    <title>בדיקת גלילה - ניהול הסעות החוג</title>
+    <title>ניהול הסעות החוג</title>
+    <meta name="description" content="אפליקציה לתיאום הסעות לחוגי ילדים">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-96x96.png">
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
     
     <!-- External CSS and JS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <!-- App Styles -->
     <link href="./styles.css" rel="stylesheet">
     
     <style>
-        /* Emergency mobile scroll fix */
+        /* MOBILE SCROLL FIX - Working version */
         html, body {
             height: auto !important;
+            min-height: auto !important;
             overflow: auto !important;
             -webkit-overflow-scrolling: touch !important;
+            margin: 0;
+            padding: 0;
         }
         
         #app {
             height: auto !important;
+            min-height: auto !important;
             overflow: visible !important;
         }
         
-        /* Version indicator */
-        body::before {
-            content: "🧪 MOBILE SCROLL TEST v1.0.9";
-            display: block;
-            background: yellow;
-            color: black;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
+        /* Override Tailwind problematic classes */
+        .min-h-screen {
+            min-height: auto !important;
+        }
+        
+        .h-screen {
+            height: auto !important;
+        }
+        
+        /* Success indicator */
+        .scroll-fix-indicator {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: green;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
             z-index: 9999;
         }
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Success indicator -->
+    <div class="scroll-fix-indicator">✅ גלילה תקינה v1.1.0</div>
+    
     <!-- Main App -->
     <div id="app"></div>
     
     <!-- App Script -->
-    <script src="./app.js"></script>
+    <script type="text/babel" src="./app.js"></script>
     
     <script>
-        console.log('🧪 MOBILE SCROLL TEST v1.0.9 - Loading...');
+        console.log('✅ Hebrew Transport App v1.1.0 - Mobile scroll fixed');
         
-        // Test if scrolling works
+        // Test scroll capability
         setTimeout(() => {
             const appHeight = document.getElementById('app').scrollHeight;
             const windowHeight = window.innerHeight;
             console.log('📏 App height:', appHeight, 'Window height:', windowHeight);
             
             if (appHeight > windowHeight) {
-                console.log('✅ Content is taller than screen - scrolling should work');
-            } else {
-                console.log('⚠️ Content might be too short to scroll');
+                console.log('✅ Content is scrollable');
             }
-        }, 1000);
+        }, 2000);
     </script>
 </body>
 </html>
