@@ -1,10 +1,6 @@
-/* MOBILE SCROLL TEST VERSION 1.0.9 - Ultra Simple */
+/* Hebrew Transportation App - Mobile Scroll Fixed v1.1.0 */
 
-/* Reset everything that might block scrolling */
-* {
-  box-sizing: border-box;
-}
-
+/* MOBILE SCROLL FIX - Proven working approach */
 html, body {
   margin: 0;
   padding: 0;
@@ -14,13 +10,13 @@ html, body {
   -webkit-overflow-scrolling: touch !important;
 }
 
-#root {
+#root, #app {
   height: auto !important;
   min-height: auto !important;
   overflow: visible !important;
 }
 
-/* Make sure Tailwind classes don't interfere */
+/* Override Tailwind problematic classes */
 .min-h-screen {
   min-height: auto !important;
 }
@@ -33,7 +29,18 @@ html, body {
   height: auto !important;
 }
 
-/* Mobile specific fixes */
+/* RTL support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Tailwind RTL utilities */
+.space-x-reverse > * + * {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Mobile optimizations */
 @media (max-width: 768px) {
   body {
     overflow: auto !important;
@@ -41,97 +48,67 @@ html, body {
     position: relative !important;
   }
   
-  /* Remove any position fixed that might interfere */
+  /* Better touch targets */
+  button, .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Input fields */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px;
+  }
+  
+  /* Navigation stays fixed */
   .fixed {
     position: fixed !important;
   }
   
-  /* Ensure navigation stays at bottom */
   .bottom-0 {
     bottom: 0 !important;
   }
 }
 
-/* RTL support */
-[dir="rtl"] {
-  text-align: right;
+/* Custom animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
 }
 
-/* Basic styling */
-.space-y-4 > * + * {
-  margin-top: 1rem;
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.space-y-6 > * + * {
-  margin-top: 1.5rem;
+/* Loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.p-4 {
-  padding: 1rem;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
-.p-6 {
-  padding: 1.5rem;
+/* Focus states for accessibility */
+button:focus, input:focus, textarea:focus, select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
-.rounded-xl {
-  border-radius: 0.75rem;
-}
-
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
-.text-white {
+/* Better button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  min-height: 48px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.bg-gradient-to-r {
-  background: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-.from-blue-600 {
-  --tw-gradient-from: #2563eb;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(37, 99, 235, 0));
-}
-
-.to-purple-600 {
-  --tw-gradient-to: #9333ea;
-}
-
-.text-blue-100 {
-  color: #dbeafe;
-}
-
-.font-bold {
-  font-weight: 700;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-/* TEST VERSION MARKER */
-.test-version::before {
-  content: "MOBILE SCROLL TEST v1.0.9";
-  display: block;
-  background: yellow;
-  color: black;
-  padding: 5px;
-  text-align: center;
-  font-weight: bold;
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
