@@ -2676,6 +2676,7 @@ const App = () => {
   // Class Add/Edit Component
   const ClassAddEditPage = React.memo(() => {
     const isEditing = !!editingClass;
+    const STORAGE_KEY = 'classFormData';
     
     // Use refs to prevent mobile keyboard issues
     const classNameRef = useRef(null);
@@ -2689,45 +2690,43 @@ const App = () => {
     const address0NameRef = useRef(null);
     const address0AddressRef = useRef(null);
     
-    // Initialize values ONLY when component mounts (not when classForm changes)
-    useEffect(() => {
-      console.log('ClassAddEditPage mounted - initializing refs');
-      // Only initialize if fields are empty (don't override user input)
-      if (classNameRef.current && !classNameRef.current.value) {
-        classNameRef.current.value = classForm.name || '';
+    // LocalStorage functions for persistent data
+    const saveToLocalStorage = useCallback((data) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        console.log('💾 Saved to localStorage:', data);
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
       }
-      if (coachNameRef.current && !coachNameRef.current.value) {
-        coachNameRef.current.value = classForm.coachName || '';
-      }
-      if (coachPhoneRef.current && !coachPhoneRef.current.value) {
-        coachPhoneRef.current.value = classForm.coachPhone || '';
-      }
-      if (managerNameRef.current && !managerNameRef.current.value) {
-        managerNameRef.current.value = classForm.managerName || '';
-      }
-      if (managerPhoneRef.current && !managerPhoneRef.current.value) {
-        managerPhoneRef.current.value = classForm.managerPhone || '';
-      }
-      if (managerEmailRef.current && !managerEmailRef.current.value) {
-        managerEmailRef.current.value = classForm.managerEmail || '';
-      }
-      
-      // Initialize first address only if empty
-      if (address0NameRef.current && !address0NameRef.current.value) {
-        address0NameRef.current.value = classForm.addresses[0]?.name || '';
-      }
-      if (address0AddressRef.current && !address0AddressRef.current.value) {
-        address0AddressRef.current.value = classForm.addresses[0]?.address || '';
-      }
-    }, []); // Empty dependency array - runs only on mount!
+    }, [STORAGE_KEY]);
     
-    // Preserve ref values during re-renders caused by state changes
-    const preservedValues = useRef({});
+    const loadFromLocalStorage = useCallback(() => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const data = JSON.parse(saved);
+          console.log('📖 Loaded from localStorage:', data);
+          return data;
+        }
+      } catch (error) {
+        console.error('Error loading from localStorage:', error);
+      }
+      return null;
+    }, [STORAGE_KEY]);
     
-    // Before any render, save current ref values
-    useEffect(() => {
-      preservedValues.current = {
-        className: classNameRef.current?.value || '',
+    const clearLocalStorage = useCallback(() => {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        console.log('🗑️ Cleared localStorage');
+      } catch (error) {
+        console.error('Error clearing localStorage:', error);
+      }
+    }, [STORAGE_KEY]);
+    
+    // Save current form data to localStorage
+    const saveCurrentData = useCallback(() => {
+      const currentData = {
+        name: classNameRef.current?.value || '',
         coachName: coachNameRef.current?.value || '',
         coachPhone: coachPhoneRef.current?.value || '',
         managerName: managerNameRef.current?.value || '',
@@ -2736,58 +2735,182 @@ const App = () => {
         address0Name: address0NameRef.current?.value || '',
         address0Address: address0AddressRef.current?.value || ''
       };
-    });
+      saveToLocalStorage(currentData);
+      return currentData;
+    }, [saveToLocalStorage]);
     
-    // After render, restore saved values if refs were cleared
+    // Restore form data from localStorage
+    const restoreData = useCallback(() => {
+      const savedData = loadFromLocalStorage();
+      if (savedData) {
+        console.log('🔄 Restoring data from localStorage:', savedData);
+        
+        // Restore with multiple attempts
+        const restore = () => {
+          if (classNameRef.current && savedData.name) {
+            classNameRef.current.value = savedData.name;
+          }
+          if (coachNameRef.current && savedData.coachName) {
+            coachNameRef.current.value = savedData.coachName;
+          }
+          if (coachPhoneRef.current && savedData.coachPhone) {
+            coachPhoneRef.current.value = savedData.coachPhone;
+          }
+          if (managerNameRef.current && savedData.managerName) {
+            managerNameRef.current.value = savedData.managerName;
+          }
+          if (managerPhoneRef.current && savedData.managerPhone) {
+            managerPhoneRef.current.value = savedData.managerPhone;
+          }
+          if (managerEmailRef.current && savedData.managerEmail) {
+            managerEmailRef.current.value = savedData.managerEmail;
+          }
+          if (address0NameRef.current && savedData.address0Name) {
+            address0NameRef.current.value = savedData.address0Name;
+          }
+          if (address0AddressRef.current && savedData.address0Address) {
+            address0AddressRef.current.value = savedData.address0Address;
+          }
+        };
+        
+        // Multiple restoration attempts
+        restore(); // Immediate
+        requestAnimationFrame(restore); // Next frame
+        setTimeout(restore, 50); // Delayed backup
+        setTimeout(restore, 200); // Extra delayed backup
+        
+        return true;
+      }
+      return false;
+    }, [loadFromLocalStorage]);
+    
+    // Auto-save every time user types (with debounce)
+    const autoSaveTimeoutRef = useRef(null);
+    const debouncedSave = useCallback(() => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        saveCurrentData();
+      }, 500); // Save 500ms after user stops typing
+    }, [saveCurrentData]);
+    
+    // Add event listeners to all inputs for auto-save
     useEffect(() => {
-      const saved = preservedValues.current;
-      if (saved.className && classNameRef.current && !classNameRef.current.value) {
-        classNameRef.current.value = saved.className;
+      const refs = [
+        classNameRef,
+        coachNameRef,
+        coachPhoneRef,
+        managerNameRef,
+        managerPhoneRef,
+        managerEmailRef,
+        address0NameRef,
+        address0AddressRef
+      ];
+      
+      const handleInput = () => {
+        console.log('📝 Input detected - scheduling auto-save');
+        debouncedSave();
+      };
+      
+      refs.forEach(ref => {
+        if (ref.current) {
+          ref.current.addEventListener('input', handleInput);
+          ref.current.addEventListener('blur', handleInput);
+        }
+      });
+      
+      return () => {
+        refs.forEach(ref => {
+          if (ref.current) {
+            ref.current.removeEventListener('input', handleInput);
+            ref.current.removeEventListener('blur', handleInput);
+          }
+        });
+        if (autoSaveTimeoutRef.current) {
+          clearTimeout(autoSaveTimeoutRef.current);
+        }
+      };
+    }, [debouncedSave]);
+    
+    // Initialize component on mount
+    useEffect(() => {
+      console.log('🚀 ClassAddEditPage mounted - initializing with localStorage');
+      
+      // Try to restore from localStorage first
+      const restored = restoreData();
+      
+      if (!restored) {
+        // If no saved data, initialize with classForm values
+        console.log('🎆 No saved data, initializing with classForm values');
+        const initialData = {
+          name: classForm.name || '',
+          coachName: classForm.coachName || '',
+          coachPhone: classForm.coachPhone || '',
+          managerName: classForm.managerName || '',
+          managerPhone: classForm.managerPhone || '',
+          managerEmail: classForm.managerEmail || '',
+          address0Name: classForm.addresses[0]?.name || '',
+          address0Address: classForm.addresses[0]?.address || ''
+        };
+        
+        // Set initial values to refs
+        if (classNameRef.current) classNameRef.current.value = initialData.name;
+        if (coachNameRef.current) coachNameRef.current.value = initialData.coachName;
+        if (coachPhoneRef.current) coachPhoneRef.current.value = initialData.coachPhone;
+        if (managerNameRef.current) managerNameRef.current.value = initialData.managerName;
+        if (managerPhoneRef.current) managerPhoneRef.current.value = initialData.managerPhone;
+        if (managerEmailRef.current) managerEmailRef.current.value = initialData.managerEmail;
+        if (address0NameRef.current) address0NameRef.current.value = initialData.address0Name;
+        if (address0AddressRef.current) address0AddressRef.current.value = initialData.address0Address;
+        
+        // Save initial data to localStorage
+        saveToLocalStorage(initialData);
       }
-      if (saved.coachName && coachNameRef.current && !coachNameRef.current.value) {
-        coachNameRef.current.value = saved.coachName;
-      }
-      if (saved.coachPhone && coachPhoneRef.current && !coachPhoneRef.current.value) {
-        coachPhoneRef.current.value = saved.coachPhone;
-      }
-      if (saved.managerName && managerNameRef.current && !managerNameRef.current.value) {
-        managerNameRef.current.value = saved.managerName;
-      }
-      if (saved.managerPhone && managerPhoneRef.current && !managerPhoneRef.current.value) {
-        managerPhoneRef.current.value = saved.managerPhone;
-      }
-      if (saved.managerEmail && managerEmailRef.current && !managerEmailRef.current.value) {
-        managerEmailRef.current.value = saved.managerEmail;
-      }
-      if (saved.address0Name && address0NameRef.current && !address0NameRef.current.value) {
-        address0NameRef.current.value = saved.address0Name;
-      }
-      if (saved.address0Address && address0AddressRef.current && !address0AddressRef.current.value) {
-        address0AddressRef.current.value = saved.address0Address;
-      }
+      
+      // Cleanup on unmount
+      return () => {
+        console.log('🧹 ClassAddEditPage unmounting - keeping localStorage for next visit');
+      };
+    }, []); // Empty dependency array - runs only on mount!
+    
+    // Restore data after every render (in case refs get cleared)
+    useEffect(() => {
+      restoreData();
     });
     
+
+
     // Stable functions using useCallback to prevent re-renders
     const addAddress = useCallback(() => {
-      console.log('Adding address - current form state:', classForm.addresses.length);
+      console.log('🏠 Adding address - saving current data to localStorage first');
+      
+      // Save current form data before state change
+      saveCurrentData();
+      
       setClassForm(prev => ({
         ...prev,
         addresses: [...prev.addresses, { name: '', address: '' }]
       }));
-    }, []);
+      
+      // Data will be restored automatically via useEffect after re-render
+    }, [saveCurrentData]);
 
     const removeAddress = useCallback((index) => {
-      console.log('Removing address:', index);
+      console.log('🗑️ Removing address:', index);
       if (classForm.addresses.length > 1) {
+        // Save current form data before state change
+        saveCurrentData();
+        
         setClassForm(prev => ({
           ...prev,
           addresses: prev.addresses.filter((_, i) => i !== index)
         }));
       }
-    }, [classForm.addresses.length]);
+    }, [classForm.addresses.length, saveCurrentData]);
 
     const updateAddress = useCallback((index, field, value) => {
-      console.log('Updating address:', index, field, value);
+      console.log('📝 Updating address:', index, field, value);
       setClassForm(prev => ({
         ...prev,
         addresses: prev.addresses.map((addr, i) => 
@@ -2797,32 +2920,44 @@ const App = () => {
     }, []);
 
     const addSession = useCallback(() => {
-      console.log('Adding session - preserving form fields');
+      console.log('📅 Adding session - CRITICAL SAVE TO LOCALSTORAGE');
+      
+      // Save current form data before state change
+      saveCurrentData();
+      
       setClassForm(prev => ({
         ...prev,
         sessions: [...prev.sessions, { day: '', startTime: '', endTime: '', addressIndex: 0 }]
       }));
-    }, []);
+      
+      console.log('✨ Session added - data will be restored from localStorage after re-render');
+    }, [saveCurrentData]);
 
     const removeSession = useCallback((index) => {
-      console.log('Removing session:', index);
+      console.log('🗑️ Removing session:', index);
       if (classForm.sessions.length > 1) {
+        // Save current form data before state change
+        saveCurrentData();
+        
         setClassForm(prev => ({
           ...prev,
           sessions: prev.sessions.filter((_, i) => i !== index)
         }));
       }
-    }, [classForm.sessions.length]);
+    }, [classForm.sessions.length, saveCurrentData]);
 
     const updateSession = useCallback((index, field, value) => {
-      console.log('Updating session:', index, field, value);
+      console.log('📝 Updating session:', index, field, value);
+      // Save before update
+      saveCurrentData();
+      
       setClassForm(prev => ({
         ...prev,
         sessions: prev.sessions.map((session, i) => 
           i === index ? { ...session, [field]: value } : session
         )
       }));
-    }, []);
+    }, [saveCurrentData]);
 
     const handleSave = () => {
       const name = classNameRef.current?.value || '';
@@ -2857,6 +2992,10 @@ const App = () => {
 
       console.log('שמירת חוג:', newClass);
       alert(isEditing ? 'החוג עודכן בהצלחה!' : 'החוג נוצר בהצלחה!');
+      
+      // Clear localStorage after successful save
+      clearLocalStorage();
+      
       setCurrentView('settings');
       setIsEditingClass(false);
       setEditingClass(null);
@@ -2884,6 +3023,9 @@ const App = () => {
     };
 
     const handleCancel = () => {
+      // Clear localStorage on cancel
+      clearLocalStorage();
+      
       setCurrentView('settings');
       setIsEditingClass(false);
       setEditingClass(null);
