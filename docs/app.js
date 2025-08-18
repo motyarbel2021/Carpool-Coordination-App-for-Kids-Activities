@@ -660,9 +660,190 @@ const App = () => {
     }
   };
 
+  // First Time Setup Page - for new users to create their family
+  const FirstTimeSetupPage = () => {
+    const [setupForm, setSetupForm] = useState({
+      familyName: '',
+      parent1Name: '',
+      parent1Phone: '',
+      parent1Email: '',
+      parent2Name: '',
+      parent2Phone: '',
+      parent2Email: ''
+    });
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      
+      if (!setupForm.familyName || !setupForm.parent1Name || !setupForm.parent1Phone) {
+        alert('אנא מלא את השדות החובה: שם משפחה, שם הורה ראשון וטלפון');
+        return;
+      }
+
+      // Create the family data structure
+      const newFamily = {
+        familyName: setupForm.familyName,
+        parents: {
+          parent1: {
+            name: setupForm.parent1Name,
+            phone: setupForm.parent1Phone,
+            email: setupForm.parent1Email
+          },
+          parent2: {
+            name: setupForm.parent2Name,
+            phone: setupForm.parent2Phone,
+            email: setupForm.parent2Email
+          }
+        },
+        children: []
+      };
+
+      setCurrentFamily(newFamily);
+      alert(`✅ ברוכים הבאים, משפחת ${setupForm.familyName}!`);
+    };
+
+    return React.createElement('div', { className: 'max-w-2xl mx-auto space-y-6 p-4', dir: 'rtl' },
+      React.createElement('div', { className: 'text-center mb-8' },
+        React.createElement('h1', { className: 'text-3xl font-bold text-blue-600 mb-2' }, 'ברוכים הבאים!'),
+        React.createElement('p', { className: 'text-gray-600' }, 'בואו נגדיר את המשפחה שלכם')
+      ),
+
+      React.createElement('form', { onSubmit: handleSubmit, className: 'space-y-6' },
+        // Family Name
+        React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+          React.createElement('h3', { className: 'font-medium mb-4 text-blue-800' }, 'פרטי המשפחה'),
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+              'שם משפחה ',
+              React.createElement('span', { className: 'text-red-500' }, '*')
+            ),
+            React.createElement('input', {
+              type: 'text',
+              value: setupForm.familyName,
+              onChange: (e) => setSetupForm(prev => ({ ...prev, familyName: e.target.value })),
+              placeholder: 'לוי, כהן, אברהם...',
+              className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+              style: { fontSize: '16px' }, // Prevent iOS zoom
+              required: true
+            })
+          )
+        ),
+
+        // Parent 1
+        React.createElement('div', { className: 'bg-blue-50 rounded-lg border border-blue-200 p-4' },
+          React.createElement('h3', { className: 'font-medium mb-4 text-blue-800' }, 'הורה ראשון'),
+          React.createElement('div', { className: 'space-y-3' },
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'שם פרטי ',
+                React.createElement('span', { className: 'text-red-500' }, '*')
+              ),
+              React.createElement('input', {
+                type: 'text',
+                value: setupForm.parent1Name,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Name: e.target.value })),
+                placeholder: 'יוסי, דוד, משה...',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' }, // Prevent iOS zoom
+                required: true
+              })
+            ),
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'מספר טלפון ',
+                React.createElement('span', { className: 'text-red-500' }, '*')
+              ),
+              React.createElement('input', {
+                type: 'tel',
+                value: setupForm.parent1Phone,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Phone: e.target.value })),
+                placeholder: '050-123-4567',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' }, // Prevent iOS zoom
+                required: true
+              })
+            ),
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'כתובת אימייל (רשות)'
+              ),
+              React.createElement('input', {
+                type: 'email',
+                value: setupForm.parent1Email,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Email: e.target.value })),
+                placeholder: 'yossi@gmail.com',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' } // Prevent iOS zoom
+              })
+            )
+          )
+        ),
+
+        // Parent 2 (optional)
+        React.createElement('div', { className: 'bg-pink-50 rounded-lg border border-pink-200 p-4' },
+          React.createElement('h3', { className: 'font-medium mb-4 text-pink-800' }, 'הורה שני (רשות)'),
+          React.createElement('div', { className: 'space-y-3' },
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'שם פרטי'
+              ),
+              React.createElement('input', {
+                type: 'text',
+                value: setupForm.parent2Name,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Name: e.target.value })),
+                placeholder: 'רחל, שרה, מרים...',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' } // Prevent iOS zoom
+              })
+            ),
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'מספר טלפון'
+              ),
+              React.createElement('input', {
+                type: 'tel',
+                value: setupForm.parent2Phone,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Phone: e.target.value })),
+                placeholder: '052-987-6543',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' } // Prevent iOS zoom
+              })
+            ),
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'כתובת אימייל'
+              ),
+              React.createElement('input', {
+                type: 'email',
+                value: setupForm.parent2Email,
+                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Email: e.target.value })),
+                placeholder: 'rachel@gmail.com',
+                className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
+                style: { fontSize: '16px' } // Prevent iOS zoom
+              })
+            )
+          )
+        ),
+
+        // Submit Button
+        React.createElement('div', { className: 'text-center' },
+          React.createElement('button', {
+            type: 'submit',
+            className: 'bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-medium text-lg shadow-lg'
+          }, 'צור את המשפחה שלי 🏠')
+        )
+      )
+    );
+  };
+
   // Family Home Page Component
   const FamilyHomePage = () => {
     const todaysBirthdays = getTodaysBirthdays();
+    
+    // If no family data exists, show setup screen
+    if (!currentFamily.familyName) {
+      return React.createElement(FirstTimeSetupPage);
+    }
     
     return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
       // Header
@@ -1063,7 +1244,7 @@ const App = () => {
             ),
             React.createElement('input', { 
               type: 'text', 
-              value: familyData.familyName, 
+              value: currentFamily.familyName, 
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
               style: { fontSize: '16px' }, // Prevent iOS zoom
               required: true
@@ -1082,7 +1263,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'text', 
                   placeholder: 'יוסי',
-                  defaultValue: familyData.parents.parent1.name,
+                  defaultValue: currentFamily.parents.parent1.name,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
                   style: { fontSize: '16px' }, // Prevent iOS zoom
                   required: true
@@ -1096,7 +1277,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'tel', 
                   placeholder: '050-123-4567',
-                  defaultValue: familyData.parents.parent1.phone,
+                  defaultValue: currentFamily.parents.parent1.phone,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
                   required: true
                 })
@@ -1108,7 +1289,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'email', 
                   placeholder: 'yossi@gmail.com',
-                  defaultValue: familyData.parents.parent1.email,
+                  defaultValue: currentFamily.parents.parent1.email,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
                 })
               )
@@ -1127,7 +1308,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'text', 
                   placeholder: 'רחל',
-                  defaultValue: familyData.parents.parent2.name,
+                  defaultValue: currentFamily.parents.parent2.name,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
                   required: true
                 })
@@ -1140,7 +1321,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'tel', 
                   placeholder: '052-987-6543',
-                  defaultValue: familyData.parents.parent2.phone,
+                  defaultValue: currentFamily.parents.parent2.phone,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
                   required: true
                 })
@@ -1152,7 +1333,7 @@ const App = () => {
                 React.createElement('input', { 
                   type: 'email', 
                   placeholder: 'rachel@gmail.com',
-                  defaultValue: familyData.parents.parent2.email,
+                  defaultValue: currentFamily.parents.parent2.email,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
                 })
               )
@@ -1165,7 +1346,7 @@ const App = () => {
       React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
         React.createElement('h3', { className: 'font-medium mb-4' }, 'ילדים במשפחה'),
         React.createElement('div', { className: 'space-y-4' },
-          familyData.children.map((child, index) => 
+          (currentFamily.children || []).map((child, index) => 
             React.createElement('div', { key: child.id, className: 'bg-gray-50 rounded-lg p-4 border border-gray-200' },
               React.createElement('div', { className: 'flex justify-between items-center mb-3' },
                 React.createElement('h4', { className: 'font-medium' }, 'ילד ' + (index + 1)),
