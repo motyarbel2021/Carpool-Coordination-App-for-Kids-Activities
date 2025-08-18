@@ -2581,7 +2581,7 @@ const App = () => {
       margin: '0 auto',
       backgroundColor: '#f9fafb',
       paddingBottom: '140px',
-      border: '5px solid blue' // ULTRA VISIBLE DEBUG MARKER v1.0.9
+      // Production ready - no debug borders
     }
   },
     React.createElement('div', { className: 'p-4' },

@@ -39,16 +39,7 @@
             position: static !important;
         }
         
-        /* Success banner for working iframe */
-        .iframe-success-banner {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 16px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            text-align: center;
-        }
+        /* Success banner removed - production ready */
         
         /* Override React container styles for guaranteed scrolling */
         .radical-mobile-container {
@@ -155,11 +146,7 @@
     </style>
 </head>
 <body>
-    <!-- Success banner -->
-    <div class="iframe-success-banner">
-        <div style="font-weight: 600; margin-bottom: 4px;">✅ פתרון הגלילה עובד!</div>
-        <div style="font-size: 14px; opacity: 0.9;">האפליקציה המלאה עם iframe scrolling</div>
-    </div>
+    <!-- Success banner removed - production ready -->
     
     <div id="root"></div>
     
@@ -200,13 +187,7 @@
         setTimeout(ensureMobileScrolling, 500);
         setTimeout(ensureMobileScrolling, 1000);
         
-        // Remove success banner after 10 seconds
-        setTimeout(() => {
-            const banner = document.querySelector('.iframe-success-banner');
-            if (banner) {
-                banner.style.display = 'none';
-            }
-        }, 10000);
+        // Production ready - no debug banners
     </script>
 </body>
 </html>
