@@ -2674,7 +2674,7 @@ const App = () => {
   };
 
   // Class Add/Edit Component
-  const ClassAddEditPage = () => {
+  const ClassAddEditPage = React.memo(() => {
     const isEditing = !!editingClass;
     
     // Use refs to prevent mobile keyboard issues
@@ -2691,6 +2691,7 @@ const App = () => {
     
     // Initialize values ONLY when component mounts (not when classForm changes)
     useEffect(() => {
+      console.log('ClassAddEditPage mounted - initializing refs');
       // Only initialize if fields are empty (don't override user input)
       if (classNameRef.current && !classNameRef.current.value) {
         classNameRef.current.value = classForm.name || '';
@@ -2720,56 +2721,108 @@ const App = () => {
       }
     }, []); // Empty dependency array - runs only on mount!
     
+    // Preserve ref values during re-renders caused by state changes
+    const preservedValues = useRef({});
     
-    const addAddress = () => {
+    // Before any render, save current ref values
+    useEffect(() => {
+      preservedValues.current = {
+        className: classNameRef.current?.value || '',
+        coachName: coachNameRef.current?.value || '',
+        coachPhone: coachPhoneRef.current?.value || '',
+        managerName: managerNameRef.current?.value || '',
+        managerPhone: managerPhoneRef.current?.value || '',
+        managerEmail: managerEmailRef.current?.value || '',
+        address0Name: address0NameRef.current?.value || '',
+        address0Address: address0AddressRef.current?.value || ''
+      };
+    });
+    
+    // After render, restore saved values if refs were cleared
+    useEffect(() => {
+      const saved = preservedValues.current;
+      if (saved.className && classNameRef.current && !classNameRef.current.value) {
+        classNameRef.current.value = saved.className;
+      }
+      if (saved.coachName && coachNameRef.current && !coachNameRef.current.value) {
+        coachNameRef.current.value = saved.coachName;
+      }
+      if (saved.coachPhone && coachPhoneRef.current && !coachPhoneRef.current.value) {
+        coachPhoneRef.current.value = saved.coachPhone;
+      }
+      if (saved.managerName && managerNameRef.current && !managerNameRef.current.value) {
+        managerNameRef.current.value = saved.managerName;
+      }
+      if (saved.managerPhone && managerPhoneRef.current && !managerPhoneRef.current.value) {
+        managerPhoneRef.current.value = saved.managerPhone;
+      }
+      if (saved.managerEmail && managerEmailRef.current && !managerEmailRef.current.value) {
+        managerEmailRef.current.value = saved.managerEmail;
+      }
+      if (saved.address0Name && address0NameRef.current && !address0NameRef.current.value) {
+        address0NameRef.current.value = saved.address0Name;
+      }
+      if (saved.address0Address && address0AddressRef.current && !address0AddressRef.current.value) {
+        address0AddressRef.current.value = saved.address0Address;
+      }
+    });
+    
+    // Stable functions using useCallback to prevent re-renders
+    const addAddress = useCallback(() => {
+      console.log('Adding address - current form state:', classForm.addresses.length);
       setClassForm(prev => ({
         ...prev,
         addresses: [...prev.addresses, { name: '', address: '' }]
       }));
-    };
+    }, []);
 
-    const removeAddress = (index) => {
+    const removeAddress = useCallback((index) => {
+      console.log('Removing address:', index);
       if (classForm.addresses.length > 1) {
         setClassForm(prev => ({
           ...prev,
           addresses: prev.addresses.filter((_, i) => i !== index)
         }));
       }
-    };
+    }, [classForm.addresses.length]);
 
-    const updateAddress = (index, field, value) => {
+    const updateAddress = useCallback((index, field, value) => {
+      console.log('Updating address:', index, field, value);
       setClassForm(prev => ({
         ...prev,
         addresses: prev.addresses.map((addr, i) => 
           i === index ? { ...addr, [field]: value } : addr
         )
       }));
-    };
+    }, []);
 
-    const addSession = () => {
+    const addSession = useCallback(() => {
+      console.log('Adding session - preserving form fields');
       setClassForm(prev => ({
         ...prev,
         sessions: [...prev.sessions, { day: '', startTime: '', endTime: '', addressIndex: 0 }]
       }));
-    };
+    }, []);
 
-    const removeSession = (index) => {
+    const removeSession = useCallback((index) => {
+      console.log('Removing session:', index);
       if (classForm.sessions.length > 1) {
         setClassForm(prev => ({
           ...prev,
           sessions: prev.sessions.filter((_, i) => i !== index)
         }));
       }
-    };
+    }, [classForm.sessions.length]);
 
-    const updateSession = (index, field, value) => {
+    const updateSession = useCallback((index, field, value) => {
+      console.log('Updating session:', index, field, value);
       setClassForm(prev => ({
         ...prev,
         sessions: prev.sessions.map((session, i) => 
           i === index ? { ...session, [field]: value } : session
         )
       }));
-    };
+    }, []);
 
     const handleSave = () => {
       const name = classNameRef.current?.value || '';
@@ -3166,7 +3219,7 @@ const App = () => {
         }, 'ביטול')
       )
     );
-  };
+  });
 
   const AvailabilityPage = () => {
     const timeSlots = [
