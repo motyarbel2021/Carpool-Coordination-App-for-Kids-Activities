@@ -204,16 +204,44 @@ const App = () => {
 
   const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
 
-  // Utility functions for app management
-  const resetAppData = () => {
-    if (confirm('האם אתה בטוח שברצונך לאפס את כל הנתונים? פעולה זו בלתי הפיכה!')) {
-      // Reset all state variables to their initial values
+  // Advanced data management functions
+  const showDataResetOptions = () => {
+    const options = `בחר מה לאפס:
+
+1️⃣ אפס הכל (מחזיר לאפליקציה ריקה)
+2️⃣ אפס רק את הילדים והחוגים  
+3️⃣ אפס רק את הזמינות השבועית
+4️⃣ אפס רק את הודעות הצ'אט
+5️⃣ אפס רק את נתוני המשפחות
+6️⃣ אפס רק את הגדרות הסינון
+7️⃣ ביטול - חזור`;
+
+    const choice = prompt(options + '\n\nהכנס מספר (1-7):');
+    
+    switch(choice) {
+      case '1': resetAllData(); break;
+      case '2': resetChildrenAndClasses(); break;
+      case '3': resetAvailability(); break;  
+      case '4': resetChatMessages(); break;
+      case '5': resetFamilyData(); break;
+      case '6': resetFilters(); break;
+      case '7': case null: return;
+      default: 
+        alert('❌ מספר לא תקין. נסה שוב.');
+        showDataResetOptions();
+    }
+  };
+
+  const resetAllData = () => {
+    if (confirm('🚨 האם אתה בטוח שברצונך לאפס את כל הנתונים? האפליקציה תחזור למצב ראשוני ריק לחלוטין!')) {
+      // Reset ALL state variables to their initial empty values
       setCurrentView('family-home');
       setSelectedChild(null);
       setSelectedClass(null);
       setEditingClass(null);
       setIsEditingClass(false);
       setAvailability({});
+      setAvailabilityStatus({}); // Clear family availability status
       setClassForm({
         name: '',
         addresses: [{ name: '', address: '' }],
@@ -256,7 +284,7 @@ const App = () => {
         showFullGroups: false
       });
       
-      // Clear any localStorage data if exists
+      // Clear any storage
       try {
         localStorage.clear();
         sessionStorage.clear();
@@ -264,7 +292,81 @@ const App = () => {
         console.log('No storage to clear');
       }
       
-      alert('🔄 האפליקציה אופסה בהצלחה! כל הנתונים נמחקו.');
+      alert('🔄 כל הנתונים אופסו בהצלחה! האפליקציה ריקה לחלוטין.');
+    }
+  };
+
+  const resetChildrenAndClasses = () => {
+    if (confirm('האם לאפס את כל הילדים והחוגים?')) {
+      setSelectedChild(null);
+      setSelectedClass(null);
+      setEditingClass(null);
+      setIsEditingClass(false);
+      setClassForm({
+        name: '',
+        addresses: [{ name: '', address: '' }],
+        sessions: [{ day: '', startTime: '', endTime: '', addressIndex: 0 }],
+        coachName: '',
+        coachPhone: '',
+        managerName: '',
+        managerPhone: '',
+        managerEmail: ''
+      });
+      setChildForm({
+        name: '',
+        birthDate: '',
+        phone: '',
+        address: ''
+      });
+      alert('✅ נתוני הילדים והחוגים אופסו בהצלחה!');
+    }
+  };
+
+  const resetAvailability = () => {
+    if (confirm('האם לאפס את כל הזמינות השבועית?')) {
+      setAvailability({});
+      setWeeklyAvailability({
+        'ראשון': { morning: false, afternoon: false, evening: false },
+        'שני': { morning: false, afternoon: false, evening: false },
+        'שלישי': { morning: false, afternoon: false, evening: false },
+        'רביעי': { morning: false, afternoon: false, evening: false },
+        'חמישי': { morning: false, afternoon: false, evening: false },
+        'שישי': { morning: false, afternoon: false, evening: false },
+        'שבת': { morning: false, afternoon: false, evening: false }
+      });
+      alert('✅ נתוני הזמינות אופסו בהצלחה!');
+    }
+  };
+
+  const resetChatMessages = () => {
+    if (confirm('האם לאפס את כל הודעות הצ\'אט?')) {
+      setChatMessages([{
+        id: 1,
+        type: 'bot',
+        message: 'שלום! אני כאן לעזור לך לנהל שינויים בחוגים. תוכל להדביק הודעות מהוואטסאפ או לכתוב שינויים ישירות.',
+        timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setChatInput('');
+      alert('✅ הודעות הצ\'אט אופסו בהצלחה!');
+    }
+  };
+
+  const resetFamilyData = () => {
+    if (confirm('האם לאפס את נתוני המשפחות (כולל משפחת כהן, לוי וכו\')?')) {
+      setAvailabilityStatus({});
+      alert('✅ נתוני המשפחות אופסו בהצלחה!');
+    }
+  };
+
+  const resetFilters = () => {
+    if (confirm('האם לאפס את הגדרות הסינון?')) {
+      setWaitingRoomFilters({
+        city: '',
+        classType: '',
+        searchText: '',
+        showFullGroups: false
+      });
+      alert('✅ הגדרות הסינון אופסו בהצלחה!');
     }
   };
 
@@ -1160,12 +1262,12 @@ const App = () => {
       React.createElement('div', { className: 'bg-red-50 border border-red-200 rounded-lg p-4' },
         React.createElement('h3', { className: 'font-medium mb-3 text-red-800' }, '⚠️ איפוס נתונים'),
         React.createElement('p', { className: 'text-red-700 text-sm mb-4' },
-          'אפס את כל הנתונים באפליקציה וחזור להתחלה'
+          'בחר מה לאפס: הכל, רק חוגים, רק זמינות, רק משפחות ועוד אפשרויות'
         ),
         React.createElement('button', { 
-          onClick: () => resetAppData(),
+          onClick: () => showDataResetOptions(),
           className: 'w-full bg-red-600 text-white rounded-lg py-3 font-medium hover:bg-red-700'
-        }, '🔄 אפס את כל הנתונים')
+        }, '🎯 בחר מה לאפס')
       ),
 
       React.createElement('button', { 
