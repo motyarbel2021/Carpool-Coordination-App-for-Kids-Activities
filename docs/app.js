@@ -2177,7 +2177,12 @@ const App = () => {
         classes: []
       };
 
-      // Add child to familyData (in real app, would update backend)
+      // Add child to current family
+      setCurrentFamily(prev => ({
+        ...prev,
+        children: [...(prev.children || []), newChild]
+      }));
+      
       console.log('הוספת ילד חדש:', newChild);
       alert('הילד ' + childForm.name + ' נוסף בהצלחה למשפחה!');
       
@@ -2226,6 +2231,7 @@ const App = () => {
               onChange: (e) => setChildForm(prev => ({ ...prev, name: e.target.value })),
               placeholder: 'דני כהן',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { fontSize: '16px' }, // Prevent iOS zoom
               required: true
             })
           ),
@@ -2238,7 +2244,8 @@ const App = () => {
               type: 'date', 
               value: childForm.birthDate,
               onChange: (e) => setChildForm(prev => ({ ...prev, birthDate: e.target.value })),
-              className: 'w-full p-2 border border-gray-300 rounded-lg'
+              className: 'w-full p-2 border border-gray-300 rounded-lg',
+              style: { fontSize: '16px' } // Prevent iOS zoom
             }),
             childForm.birthDate && React.createElement('div', { className: 'text-xs text-gray-500 mt-1' },
               'גיל: ' + calculateAge(childForm.birthDate) + ' שנים'
@@ -2254,7 +2261,8 @@ const App = () => {
               value: childForm.phone,
               onChange: (e) => setChildForm(prev => ({ ...prev, phone: e.target.value })),
               placeholder: '050-111-2222',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { fontSize: '16px' } // Prevent iOS zoom
             })
           ),
 
@@ -2269,6 +2277,7 @@ const App = () => {
               onChange: (e) => setChildForm(prev => ({ ...prev, address: e.target.value })),
               placeholder: 'רח\' הרצל 123, תל אביב',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { fontSize: '16px' }, // Prevent iOS zoom
               required: true
             })
           )
