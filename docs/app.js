@@ -2685,6 +2685,10 @@ const App = () => {
     const managerPhoneRef = useRef(null);
     const managerEmailRef = useRef(null);
     
+    // Address refs (for first address only - main fix)
+    const address0NameRef = useRef(null);
+    const address0AddressRef = useRef(null);
+    
     // Initialize values when component mounts
     useEffect(() => {
       if (classNameRef.current) classNameRef.current.value = classForm.name || '';
@@ -2693,6 +2697,10 @@ const App = () => {
       if (managerNameRef.current) managerNameRef.current.value = classForm.managerName || '';
       if (managerPhoneRef.current) managerPhoneRef.current.value = classForm.managerPhone || '';
       if (managerEmailRef.current) managerEmailRef.current.value = classForm.managerEmail || '';
+      
+      // Initialize first address
+      if (address0NameRef.current) address0NameRef.current.value = classForm.addresses[0]?.name || '';
+      if (address0AddressRef.current) address0AddressRef.current.value = classForm.addresses[0]?.address || '';
     }, [classForm]);
     
     
@@ -2753,9 +2761,10 @@ const App = () => {
       const managerName = managerNameRef.current?.value || '';
       const managerPhone = managerPhoneRef.current?.value || '';
       const managerEmail = managerEmailRef.current?.value || '';
+      const address0Address = address0AddressRef.current?.value || '';
       
-      if (!name || !coachName) {
-        alert('אנא מלא את השדות החובה: שם חוג ושם מאמן');
+      if (!name || !coachName || !address0Address) {
+        alert('אנא מלא את השדות החובה: שם חוג, שם מאמן וכתובת');
         return;
       }
 
@@ -2767,7 +2776,12 @@ const App = () => {
         managerName: managerName,
         managerPhone: managerPhone,
         managerEmail: managerEmail,
-        addresses: classForm.addresses, // Keep existing address logic for now
+        addresses: [
+          {
+            name: address0NameRef.current?.value || '',
+            address: address0AddressRef.current?.value || ''
+          }
+        ],
         sessions: classForm.sessions // Keep existing sessions logic for now
       };
 
@@ -2784,6 +2798,8 @@ const App = () => {
       if (managerNameRef.current) managerNameRef.current.value = '';
       if (managerPhoneRef.current) managerPhoneRef.current.value = '';
       if (managerEmailRef.current) managerEmailRef.current.value = '';
+      if (address0NameRef.current) address0NameRef.current.value = '';
+      if (address0AddressRef.current) address0AddressRef.current.value = '';
       
       setClassForm({
         name: '',
@@ -2801,7 +2817,18 @@ const App = () => {
       setCurrentView('settings');
       setIsEditingClass(false);
       setEditingClass(null);
-      // Reset form
+      
+      // Reset refs
+      if (classNameRef.current) classNameRef.current.value = '';
+      if (coachNameRef.current) coachNameRef.current.value = '';
+      if (coachPhoneRef.current) coachPhoneRef.current.value = '';
+      if (managerNameRef.current) managerNameRef.current.value = '';
+      if (managerPhoneRef.current) managerPhoneRef.current.value = '';
+      if (managerEmailRef.current) managerEmailRef.current.value = '';
+      if (address0NameRef.current) address0NameRef.current.value = '';
+      if (address0AddressRef.current) address0AddressRef.current.value = '';
+      
+      // Reset form state
       setClassForm({
         name: '',
         addresses: [{ name: '', address: '' }],
@@ -2877,13 +2904,26 @@ const App = () => {
                   React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
                     'שם המקום (רשות)'
                   ),
-                  React.createElement('input', { 
-                    type: 'text', 
-                    value: address.name,
-                    onChange: (e) => updateAddress(index, 'name', e.target.value),
-                    placeholder: 'בית ספר רמת אביב, בריכת העיר...',
-                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
-                  })
+                  index === 0 ? 
+                    React.createElement('input', { 
+                      ref: address0NameRef,
+                      type: 'text', 
+                      placeholder: 'בית ספר רמת אביב, בריכת העיר...',
+                      className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                      style: { 
+                        fontSize: '16px', // Prevent iOS zoom
+                        WebkitAppearance: 'none',
+                        appearance: 'none'
+                      },
+                      autoComplete: 'off'
+                    }) :
+                    React.createElement('input', { 
+                      type: 'text', 
+                      value: address.name,
+                      onChange: (e) => updateAddress(index, 'name', e.target.value),
+                      placeholder: 'בית ספר רמת אביב, בריכת העיר...',
+                      className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+                    })
                 ),
                 
                 React.createElement('div', null,
@@ -2891,14 +2931,28 @@ const App = () => {
                     'כתובת ',
                     React.createElement('span', { className: 'text-red-500' }, '*')
                   ),
-                  React.createElement('input', { 
-                    type: 'text', 
-                    value: address.address,
-                    onChange: (e) => updateAddress(index, 'address', e.target.value),
-                    placeholder: 'רח׳ הרצל 45, תל אביב',
-                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
-                    required: true
-                  })
+                  index === 0 ? 
+                    React.createElement('input', { 
+                      ref: address0AddressRef,
+                      type: 'text', 
+                      placeholder: 'רח׳ הרצל 45, תל אביב',
+                      className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                      style: { 
+                        fontSize: '16px', // Prevent iOS zoom
+                        WebkitAppearance: 'none',
+                        appearance: 'none'
+                      },
+                      autoComplete: 'street-address',
+                      required: true
+                    }) :
+                    React.createElement('input', { 
+                      type: 'text', 
+                      value: address.address,
+                      onChange: (e) => updateAddress(index, 'address', e.target.value),
+                      placeholder: 'רח׳ הרצל 45, תל אביב',
+                      className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                      required: true
+                    })
                 )
               )
             )
