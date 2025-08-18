@@ -2580,7 +2580,7 @@ const App = () => {
       maxWidth: '448px',
       margin: '0 auto',
       backgroundColor: '#f9fafb',
-      paddingBottom: '100px',
+      paddingBottom: '140px',
       border: '5px solid blue' // ULTRA VISIBLE DEBUG MARKER v1.0.9
     }
   },

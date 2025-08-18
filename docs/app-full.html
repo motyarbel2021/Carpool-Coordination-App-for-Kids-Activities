@@ -128,6 +128,30 @@
             max-height: none !important;
             overflow: visible !important;
         }
+        
+        /* Fix bottom navigation covering content */
+        .radical-mobile-container {
+            padding-bottom: 120px !important; /* Space for bottom navigation */
+        }
+        
+        /* Additional spacing for main content area */
+        .p-4 {
+            padding-bottom: 120px !important;
+        }
+        
+        /* Ensure last elements have extra margin */
+        .space-y-6 > *:last-child,
+        .space-y-4 > *:last-child {
+            margin-bottom: 80px !important;
+        }
+        
+        /* Bottom navigation specific fixes */
+        .fixed.bottom-0 {
+            z-index: 1000 !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
     </style>
 </head>
 <body>
