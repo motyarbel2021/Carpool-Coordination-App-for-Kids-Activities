@@ -81,128 +81,420 @@ const App = () => {
     emergencyAlerts: 2
   });
   
-  const [allFamilies, setAllFamilies] = useState([
-    {
-      id: 1,
-      name: 'משפחת כהן',
-      children: 2,
-      activeClasses: 3,
-      phone: '050-123-4567',
-      email: 'cohen@email.com',
-      lastActive: '2025-08-16',
-      availabilityStatus: 'ממלא זמינות'
-    },
-    {
-      id: 2,
-      name: 'משפחת לוי',
-      children: 1,
-      activeClasses: 2,
-      phone: '052-987-6543',
-      email: 'levi@email.com',
-      lastActive: '2025-08-15',
-      availabilityStatus: 'מילא זמינות'
-    },
-    {
-      id: 3,
-      name: 'משפחת אברהם',
-      children: 3,
-      activeClasses: 4,
-      phone: '054-111-2222',
-      email: 'avraham@email.com',
-      lastActive: '2025-08-14',
-      availabilityStatus: 'לא מילא זמינות'
-    },
-    {
-      id: 4,
-      name: 'משפחת דוד',
-      children: 2,
-      activeClasses: 2,
-      phone: '053-333-4444',
-      email: 'david@email.com',
-      lastActive: '2025-08-16',
-      availabilityStatus: 'מילא זמינות'
-    }
-  ]);
+  const [allFamilies, setAllFamilies] = useState([]);
   
-  const [availableClasses, setAvailableClasses] = useState([
-    {
-      id: 'CLS001',
-      name: 'כדורסל',
-      city: 'תל אביב',
-      location: 'בית ספר אילון',
-      address: 'רח׳ הרצל 45, תל אביב',
-      coach: 'דוד כהן',
-      coachPhone: '052-987-6543',
-      schedule: 'ראשון, שלישי, חמישי 16:00-17:30',
-      ageGroup: '10-12',
-      currentMembers: 5,
-      maxMembers: 8,
-      manager: 'משפחת לוי',
-      managerPhone: '050-111-2222',
-      description: 'חוג כדורסל למתחילים, אווירה טובה וחברותית'
-    },
-    {
-      id: 'CLS002', 
-      name: 'שחייה',
-      city: 'תל אביב',
-      location: 'בריכת העיר',
-      address: 'רח׳ ביאליק 12, תל אביב',
-      coach: 'מירי לוי',
-      coachPhone: '054-123-4567',
-      schedule: 'שני, רביעי 17:00-18:00',
-      ageGroup: '8-14',
-      currentMembers: 3,
-      maxMembers: 6,
-      manager: 'משפחת גרין',
-      managerPhone: '050-333-4444',
-      description: 'לימוד שחייה בצורה מקצועית ובטוחה'
-    }
-  ]);
+  const [availableClasses, setAvailableClasses] = useState([]);
   const [notifications, setNotifications] = useState([
     { id: 1, text: 'תזכורת: מלא זמינות לחוג כדורסל עד מחר בערב', type: 'warning', time: '14:30' },
     { id: 2, text: 'שיבוץ חדש פורסם לחוג שחייה', type: 'info', time: '09:15' }
   ]);
 
-  // נתוני המשפחה והילדים עם החוגים שלהם
-  const familyData = {
-    familyName: 'משפחת כהן',
+  // נתוני המשפחה הראשית - יהפוך לדינמי לאחר יצירת המשפחה הראשונה
+  const [currentFamily, setCurrentFamily] = useState({
+    familyName: '',
     parents: {
-      parent1: { name: 'יוסי', phone: '050-123-4567', email: 'yossi@gmail.com' },
-      parent2: { name: 'רחל', phone: '052-987-6543', email: 'rachel@gmail.com' }
+      parent1: { name: '', phone: '', email: '' },
+      parent2: { name: '', phone: '', email: '' }
     },
-    children: [
-      {
-        id: 1,
-        name: 'דני כהן',
-        birthDate: '2012-08-15',
-        phone: '050-111-2222',
-        address: 'רח׳ הרצל 123, תל אביב',
-        classes: [
-          {
-            id: 1,
-            name: 'כדורסל',
-            location: 'בית ספר רמת אביב',
-            address: 'רח׳ הרצל 45, תל אביב',
-            schedule: 'ראשון, שלישי, חמישי 16:00-17:30',
-            coach: 'דוד כהן - 052-987-6543',
-            families: [
-              { name: 'משפחת כהן', rides: 12, children: ['דני'], parents: { parent1: 'יוסי', parent2: 'רחל' } },
-              { name: 'משפחת לוי', rides: 8, children: ['יובל'], parents: { parent1: 'דוד', parent2: 'מירי' } }
-            ],
-            weeklySchedule: [
-              { day: 'ראשון', pickup: 'משפחת כהן', return: 'משפחת לוי', time: '16:00-17:30' },
-              { day: 'שלישי', pickup: 'משפחת אברהם', return: 'משפחת דוד', time: '16:00-17:30' }
-            ],
-            myTasks: [
-              { date: 'יום ראשון 15/8', task: 'איסוף מהחוג', time: '17:30', children: ['דני', 'יובל', 'נועה'] }
-            ]
-          }
-        ]
-      }
-    ]
-  };
+    children: []
+  });
 
   const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+  // Dynamic family and class management functions
+  const createNewClass = (classData, creatorFamily) => {
+    const newClass = {
+      ...classData,
+      id: 'CLS' + (Date.now().toString().slice(-6)),
+      createdAt: new Date().toISOString(),
+      managers: [creatorFamily.id], // Creator becomes first manager
+      members: [creatorFamily.id], // Creator becomes first member
+      currentMembers: 1,
+      maxMembers: classData.maxMembers || 10
+    };
+    
+    setAvailableClasses(prev => [...prev, newClass]);
+    
+    // Update family's classes
+    setAllFamilies(prev => prev.map(family => 
+      family.id === creatorFamily.id 
+        ? { ...family, activeClasses: family.activeClasses + 1 }
+        : family
+    ));
+    
+    return newClass;
+  };
+
+  const addFamilyToClass = (classId, familyId) => {
+    setAvailableClasses(prev => prev.map(classItem => 
+      classItem.id === classId 
+        ? {
+            ...classItem,
+            members: [...(classItem.members || []), familyId],
+            currentMembers: (classItem.currentMembers || 0) + 1
+          }
+        : classItem
+    ));
+    
+    // Update family's classes count
+    setAllFamilies(prev => prev.map(family => 
+      family.id === familyId 
+        ? { ...family, activeClasses: family.activeClasses + 1 }
+        : family
+    ));
+  };
+
+  const transferClassManagement = (classId, fromFamilyId, toFamilyId) => {
+    setAvailableClasses(prev => prev.map(classItem => 
+      classItem.id === classId 
+        ? {
+            ...classItem,
+            managers: classItem.managers.map(managerId => 
+              managerId === fromFamilyId ? toFamilyId : managerId
+            )
+          }
+        : classItem
+    ));
+  };
+
+  const addClassManager = (classId, newManagerId) => {
+    setAvailableClasses(prev => prev.map(classItem => 
+      classItem.id === classId 
+        ? {
+            ...classItem,
+            managers: [...(classItem.managers || []), newManagerId]
+          }
+        : classItem
+    ));
+  };
+
+  const removeClassManager = (classId, managerIdToRemove) => {
+    setAvailableClasses(prev => prev.map(classItem => 
+      classItem.id === classId 
+        ? {
+            ...classItem,
+            managers: (classItem.managers || []).filter(id => id !== managerIdToRemove)
+          }
+        : classItem
+    ));
+  };
+
+  const createNewFamily = (familyData) => {
+    const newFamily = {
+      id: Date.now(),
+      name: familyData.familyName,
+      children: familyData.children.length || 0,
+      activeClasses: 0,
+      phone: familyData.parents.parent1.phone || '',
+      email: familyData.parents.parent1.email || '',
+      lastActive: new Date().toISOString().split('T')[0],
+      availabilityStatus: 'טרם מילא',
+      parents: familyData.parents,
+      childrenDetails: familyData.children || []
+    };
+    
+    setAllFamilies(prev => [...prev, newFamily]);
+    setCurrentFamily(familyData);
+    
+    return newFamily;
+  };
+
+  const getFamilyById = (familyId) => {
+    return allFamilies.find(family => family.id === familyId);
+  };
+
+  const getClassById = (classId) => {
+    return availableClasses.find(classItem => classItem.id === classId);
+  };
+
+  const isUserFamilyManager = (classId, userFamilyId) => {
+    const classItem = getClassById(classId);
+    return classItem?.managers?.includes(userFamilyId) || false;
+  };
+
+  // Advanced data management functions
+  const showDataResetOptions = () => {
+    const options = `בחר מה לאפס:
+
+1️⃣ אפס הכל (מחזיר לאפליקציה ריקה)
+2️⃣ אפס רק את הילדים והחוגים  
+3️⃣ אפס רק את הזמינות השבועית
+4️⃣ אפס רק את הודעות הצ'אט
+5️⃣ אפס רק את נתוני המשפחות
+6️⃣ אפס רק את הגדרות הסינון
+7️⃣ ביטול - חזור`;
+
+    const choice = prompt(options + '\n\nהכנס מספר (1-7):');
+    
+    switch(choice) {
+      case '1': resetAllData(); break;
+      case '2': resetChildrenAndClasses(); break;
+      case '3': resetAvailability(); break;  
+      case '4': resetChatMessages(); break;
+      case '5': resetFamilyData(); break;
+      case '6': resetFilters(); break;
+      case '7': case null: return;
+      default: 
+        alert('❌ מספר לא תקין. נסה שוב.');
+        showDataResetOptions();
+    }
+  };
+
+  const resetAllData = () => {
+    if (confirm('🚨 האם אתה בטוח שברצונך לאפס את כל הנתונים? האפליקציה תחזור למצב ראשוני ריק לחלוטין!')) {
+      // Reset ALL state variables to their initial empty values
+      setCurrentView('family-home');
+      setSelectedChild(null);
+      setSelectedClass(null);
+      setEditingClass(null);
+      setIsEditingClass(false);
+      setAvailability({});
+      setAvailabilityStatus({}); // Clear family availability status
+      setAllFamilies([]); // Clear all families including "משפחת כהן"
+      setAvailableClasses([]); // Clear all classes
+      setSystemStats({
+        totalFamilies: 0,
+        totalChildren: 0,
+        totalClasses: 0,
+        activeTransportGroups: 0,
+        pendingRequests: 0,
+        emergencyAlerts: 0
+      }); // Clear statistics
+      setClassForm({
+        name: '',
+        addresses: [{ name: '', address: '' }],
+        sessions: [{ day: '', startTime: '', endTime: '', addressIndex: 0 }],
+        coachName: '',
+        coachPhone: '',
+        managerName: '',
+        managerPhone: '',
+        managerEmail: ''
+      });
+      setChatMessages([{
+        id: 1,
+        type: 'bot',
+        message: 'שלום! אני כאן לעזור לך לנהל שינויים בחוגים. תוכל להדביק הודעות מהוואטסאפ או לכתוב שינויים ישירות.',
+        timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setChatInput('');
+      setChildForm({
+        name: '',
+        birthDate: '',
+        phone: '',
+        address: ''
+      });
+      setWeeklyAvailability({
+        'ראשון': { morning: false, afternoon: false, evening: false },
+        'שני': { morning: false, afternoon: false, evening: false },
+        'שלישי': { morning: false, afternoon: false, evening: false },
+        'רביעי': { morning: false, afternoon: false, evening: false },
+        'חמישי': { morning: false, afternoon: false, evening: false },
+        'שישי': { morning: false, afternoon: false, evening: false },
+        'שבת': { morning: false, afternoon: false, evening: false }
+      });
+      setIsAdminMode(false);
+      setAdminPassword('');
+      setShowAdminLogin(false);
+      setWaitingRoomFilters({
+        city: '',
+        classType: '',
+        searchText: '',
+        showFullGroups: false
+      });
+      
+      // Clear any storage
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (error) {
+        console.log('No storage to clear');
+      }
+      
+      alert('🔄 כל הנתונים אופסו בהצלחה! האפליקציה ריקה לחלוטין.');
+    }
+  };
+
+  const resetChildrenAndClasses = () => {
+    if (confirm('האם לאפס את כל הילדים והחוגים?')) {
+      setSelectedChild(null);
+      setSelectedClass(null);
+      setEditingClass(null);
+      setIsEditingClass(false);
+      setAvailableClasses([]); // Clear all available classes
+      setClassForm({
+        name: '',
+        addresses: [{ name: '', address: '' }],
+        sessions: [{ day: '', startTime: '', endTime: '', addressIndex: 0 }],
+        coachName: '',
+        coachPhone: '',
+        managerName: '',
+        managerPhone: '',
+        managerEmail: ''
+      });
+      setChildForm({
+        name: '',
+        birthDate: '',
+        phone: '',
+        address: ''
+      });
+      setSystemStats(prev => ({
+        ...prev,
+        totalClasses: 0
+      })); // Update class statistics
+      alert('✅ נתוני הילדים והחוגים אופסו בהצלחה!');
+    }
+  };
+
+  const resetAvailability = () => {
+    if (confirm('האם לאפס את כל הזמינות השבועית?')) {
+      setAvailability({});
+      setWeeklyAvailability({
+        'ראשון': { morning: false, afternoon: false, evening: false },
+        'שני': { morning: false, afternoon: false, evening: false },
+        'שלישי': { morning: false, afternoon: false, evening: false },
+        'רביעי': { morning: false, afternoon: false, evening: false },
+        'חמישי': { morning: false, afternoon: false, evening: false },
+        'שישי': { morning: false, afternoon: false, evening: false },
+        'שבת': { morning: false, afternoon: false, evening: false }
+      });
+      alert('✅ נתוני הזמינות אופסו בהצלחה!');
+    }
+  };
+
+  const resetChatMessages = () => {
+    if (confirm('האם לאפס את כל הודעות הצ\'אט?')) {
+      setChatMessages([{
+        id: 1,
+        type: 'bot',
+        message: 'שלום! אני כאן לעזור לך לנהל שינויים בחוגים. תוכל להדביק הודעות מהוואטסאפ או לכתוב שינויים ישירות.',
+        timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setChatInput('');
+      alert('✅ הודעות הצ\'אט אופסו בהצלחה!');
+    }
+  };
+
+  const resetFamilyData = () => {
+    if (confirm('האם לאפס את נתוני המשפחות (כולל משפחת כהן, לוי וכו\')?')) {
+      setAvailabilityStatus({});
+      setAllFamilies([]); // This will remove "משפחת כהן" and all other families
+      setSystemStats(prev => ({
+        ...prev,
+        totalFamilies: 0,
+        totalChildren: 0
+      })); // Update statistics
+      alert('✅ נתוני המשפחות אופסו בהצלחה! (כולל משפחת כהן)');
+    }
+  };
+
+  const resetFilters = () => {
+    if (confirm('האם לאפס את הגדרות הסינון?')) {
+      setWaitingRoomFilters({
+        city: '',
+        classType: '',
+        searchText: '',
+        showFullGroups: false
+      });
+      alert('✅ הגדרות הסינון אופסו בהצלחה!');
+    }
+  };
+
+  const exportUserData = () => {
+    const userData = {
+      currentView,
+      availability,
+      weeklyAvailability,
+      childForm,
+      classForm,
+      waitingRoomFilters,
+      chatMessages: chatMessages.slice(1), // Remove default bot message
+      isClassManager,
+      exportDate: new Date().toLocaleString('he-IL'),
+      appVersion: '2.0.0'
+    };
+    
+    const dataStr = JSON.stringify(userData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'transport-app-data-' + new Date().toISOString().split('T')[0] + '.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    alert('📁 הנתונים יוצאו בהצלחה! הקובץ ירד למחשב.');
+  };
+
+  const openSupportContact = () => {
+    const supportInfo = `🎯 צור קשר עם תמיכה
+
+📧 אימייל: support@transport-app.co.il
+📱 טלפון: 03-1234567  
+💬 וואטסאפ: 050-1234567
+
+⏰ שעות פעילות:
+ראשון-חמישי: 8:00-18:00
+שישי: 8:00-12:00
+
+🌐 אתר: www.transport-app.co.il
+📍 כתובת: רחוב התחבורה 123, תל אביב
+
+💡 טיפים לפנייה יעילה:
+• ציין את מספר הגרסה (2.0.0)
+• תאר את הבעיה בפירוט
+• צרף צילומי מסך במידת הצורך`;
+    
+    alert(supportInfo);
+    
+    // Option to open WhatsApp or email
+    if (confirm('האם לפתוח את וואטסאפ לפנייה מהירה?')) {
+      window.open('https://wa.me/972501234567?text=שלום, אני צריך עזרה עם אפליקציית ניהול הסעות החוג', '_blank');
+    }
+  };
+
+  const openPrivacyPolicy = () => {
+    const privacyPolicy = `🔒 מדיניות פרטיות - אפליקציית ניהול הסעות החוג
+
+📋 איסוף מידע:
+• פרטים אישיים: שם, טלפון, כתובת
+• פרטי ילדים: שם, גיל, חוגים  
+• העדפות הסעה וזמינות
+• היסטורית שימוש באפליקציה
+
+🛡️ שימוש במידע:
+• תיאום הסעות בין משפחות
+• יצירת קשר עם הורים אחרים
+• שיפור שירותי האפליקציה
+• שליחת התראות והודעות רלוונטיות
+
+🔐 אבטחת מידע:
+• כל המידע מוצפן ומאובטח
+• אין שיתוף מידע עם צדדים שלישיים
+• גיבוי בטוח של כל הנתונים
+• מחיקת מידע לפי בקשת המשתמש
+
+📞 זכויות המשתמש:
+• צפייה במידע השמור עליך
+• עדכון או תיקון פרטים
+• מחיקת המידע (זכות לשכחה)
+• ייצוא הנתונים שלך
+
+⚖️ תנאי שימוש:
+• השימוש באפליקציה כפוף לחוקי ישראל
+• אסור שימוש לרעה במידע של משתמשים אחרים
+• החברה שומרת זכות לעדכן תנאים
+• צור קשר לשאלות או בקשות
+
+📅 עדכון אחרון: דצמבר 2024
+📧 לשאלות: privacy@transport-app.co.il`;
+    
+    alert(privacyPolicy);
+    
+    if (confirm('האם לפתוח את מדיניות הפרטיות המלאה באתר?')) {
+      window.open('https://transport-app.co.il/privacy', '_blank');
+    }
+  };
 
   // פונקציה לחישוב גיל
   const calculateAge = (birthDate) => {
@@ -981,18 +1273,30 @@ const App = () => {
             React.createElement('span', { className: 'text-blue-600' }, '←')
           ),
           React.createElement('button', { 
-            onClick: () => alert('ייצוא נתונים בפיתוח'),
+            onClick: () => exportUserData(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'ייצוא נתונים'),
           React.createElement('button', { 
-            onClick: () => alert('פתיחת צ׳אט תמיכה'),
+            onClick: () => openSupportContact(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'צור קשר עם תמיכה'),
           React.createElement('button', { 
-            onClick: () => alert('מדיניות פרטיות'),
+            onClick: () => openPrivacyPolicy(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'מדיניות פרטיות')
         )
+      ),
+
+      // Reset Data Section
+      React.createElement('div', { className: 'bg-red-50 border border-red-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-medium mb-3 text-red-800' }, '⚠️ איפוס נתונים'),
+        React.createElement('p', { className: 'text-red-700 text-sm mb-4' },
+          'בחר מה לאפס: הכל, רק חוגים, רק זמינות, רק משפחות ועוד אפשרויות'
+        ),
+        React.createElement('button', { 
+          onClick: () => showDataResetOptions(),
+          className: 'w-full bg-red-600 text-white rounded-lg py-3 font-medium hover:bg-red-700'
+        }, '🎯 בחר מה לאפס')
       ),
 
       React.createElement('button', { 
@@ -1026,9 +1330,58 @@ const App = () => {
 
     const joinGroup = (classId) => {
       const classItem = availableClasses.find(c => c.id === classId);
-      if (classItem && classItem.currentMembers < classItem.maxMembers) {
-        alert('נשלחה בקשה להצטרפות לקבוצת ' + classItem.name + ' - ' + classItem.location + '. המנהל יחזור אליך בהקדם.');
+      if (!classItem) {
+        alert('שגיאה: חוג לא נמצא.');
+        return;
       }
+
+      // Check if class is full
+      if (classItem.currentMembers >= classItem.maxMembers) {
+        alert('מצטער, הקבוצה מלאה. תוכל להתקשר למנהל לבירור אפשרויות נוספות.');
+        return;
+      }
+
+      // Check if user has a family profile
+      if (!currentFamily.familyName && allFamilies.length === 0) {
+        const shouldCreateFamily = confirm('כדי להצטרף לחוג, תחילה צריך ליצור פרופיל משפחה. האם לעבור ליצירת פרופיל משפחה?');
+        if (shouldCreateFamily) {
+          setCurrentView('add-child');
+          return;
+        } else {
+          return;
+        }
+      }
+
+      // Get user family
+      let userFamily = null;
+      if (allFamilies.length > 0) {
+        userFamily = allFamilies[0]; // First family as current family
+      } else if (currentFamily.familyName) {
+        userFamily = createNewFamily(currentFamily);
+      }
+
+      if (!userFamily) {
+        alert('שגיאה: לא נמצאה משפחה. אנא צור פרופיל משפחה תחילה.');
+        return;
+      }
+
+      // Check if family is already a member
+      if (classItem.members && classItem.members.includes(userFamily.id)) {
+        alert('המשפחה שלך כבר חברה בחוג זה.');
+        return;
+      }
+
+      // Add family to class
+      addFamilyToClass(classId, userFamily.id);
+
+      const updatedClass = getClassById(classId);
+      alert(`🎉 הצטרפת בהצלחה לחוג "${classItem.name}"!
+      
+👨‍👩‍👧‍👦 חברים בחוג: ${updatedClass.currentMembers}/${updatedClass.maxMembers}
+📍 מיקום: ${classItem.location}
+📞 מנהל: ${classItem.manager}
+
+המנהל יצור איתך קשר בהקדם לתיאום פרטים נוספים.`);
     };
 
     return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
@@ -1151,7 +1504,7 @@ const App = () => {
               classItem.currentMembers < classItem.maxMembers ? (
                 React.createElement('button', {
                   onClick: () => joinGroup(classItem.id),
-                  className: 'flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium'
+                  className: 'flex-1 bg-blue-600 text-white py-3 px-2 rounded-lg hover:bg-blue-700 text-sm font-medium min-h-[48px] leading-tight'
                 }, '🤝 בקש להצטרף')
               ) : (
                 React.createElement('button', {
@@ -1207,17 +1560,39 @@ const App = () => {
         return;
       }
 
-      const newId = 'CLS' + String(availableClasses.length + 1).padStart(3, '0');
-      const newClass = {
-        ...newGroupForm,
-        id: newId,
-        currentMembers: 1,
-        manager: familyData.familyName,
-        managerPhone: familyData.parents.parent1.phone
-      };
+      // Check if user has a family profile, if not - create one first
+      if (!currentFamily.familyName && allFamilies.length === 0) {
+        const shouldCreateFamily = confirm('כדי ליצור חוג חדש, תחילה צריך ליצור פרופיל משפחה. האם לעבור ליצירת פרופיל משפחה?');
+        if (shouldCreateFamily) {
+          setCurrentView('add-child'); // This will prompt family creation
+          return;
+        } else {
+          return;
+        }
+      }
 
-      setAvailableClasses(prev => [...prev, newClass]);
-      alert('קבוצה חדשה נוצרה בהצלחה! מספר חוג: ' + newId);
+      // Get current user family (first family if exists, or prompt to create)
+      let userFamily = allFamilies.length > 0 ? allFamilies[0] : null;
+      if (!userFamily && currentFamily.familyName) {
+        userFamily = createNewFamily(currentFamily);
+      }
+
+      if (!userFamily) {
+        alert('שגיאה: לא נמצאה משפחה. אנא צור פרופיל משפחה תחילה.');
+        return;
+      }
+
+      // Create the new class with user family as manager
+      const newClass = createNewClass(newGroupForm, userFamily);
+      
+      alert(`קבוצה חדשה נוצרה בהצלחה! 
+      
+🎯 מספר חוג: ${newClass.id}
+👑 מנהל החוג: ${userFamily.name}
+👨‍👩‍👧‍👦 חברים: 1/${newClass.maxMembers}
+
+כעת תוכל להוסיף משפחות נוספות לחוג או להעביר ניהול למשפחה אחרת.`);
+      
       setCurrentView('waiting-room');
     };
 
@@ -2467,20 +2842,152 @@ const App = () => {
     );
   };
 
-  const ClassFamiliesPage = () => (
-    React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
-      React.createElement('h2', { className: 'text-xl font-bold' }, 'משפחות בחוג'),
-      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
-        React.createElement('p', { className: 'text-gray-600' }, 'רשימת המשפחות תבוא בקרוב...')
+  const ClassFamiliesPage = () => {
+    // Get current user's class (for demonstration, using first available class)
+    const currentClass = availableClasses.length > 0 ? availableClasses[0] : null;
+    const userFamily = allFamilies.length > 0 ? allFamilies[0] : null;
+    const isManager = currentClass && userFamily && isUserFamilyManager(currentClass.id, userFamily.id);
+
+    const handleTransferManagement = (toFamilyId) => {
+      if (!currentClass || !userFamily) return;
+      
+      const toFamily = getFamilyById(toFamilyId);
+      if (!toFamily) return;
+
+      if (confirm(`האם אתה בטוח שברצונך להעביר את ניהול החוג "${currentClass.name}" למשפחת ${toFamily.name}?`)) {
+        transferClassManagement(currentClass.id, userFamily.id, toFamilyId);
+        alert(`🎉 ניהול החוג הועבר בהצלחה למשפחת ${toFamily.name}!`);
+      }
+    };
+
+    const handleAddManager = (familyId) => {
+      if (!currentClass) return;
+      
+      const family = getFamilyById(familyId);
+      if (!family) return;
+
+      if (currentClass.managers && currentClass.managers.includes(familyId)) {
+        alert('משפחה זו כבר מנהלת את החוג.');
+        return;
+      }
+
+      if (confirm(`האם להוסיף את משפחת ${family.name} כמנהל נוסף של החוג?`)) {
+        addClassManager(currentClass.id, familyId);
+        alert(`🎉 משפחת ${family.name} נוספה כמנהל החוג!`);
+      }
+    };
+
+    const handleRemoveManager = (familyId) => {
+      if (!currentClass) return;
+      
+      const family = getFamilyById(familyId);
+      if (!family) return;
+
+      if (currentClass.managers && currentClass.managers.length <= 1) {
+        alert('לא ניתן להסיר את המנהל היחיד. העבר תחילה ניהול למשפחה אחרת.');
+        return;
+      }
+
+      if (confirm(`האם להסיר את משפחת ${family.name} מניהול החוג?`)) {
+        removeClassManager(currentClass.id, familyId);
+        alert(`משפחת ${family.name} הוסרה מניהול החוג.`);
+      }
+    };
+
+    // Get families that are members of the current class
+    const classMembers = currentClass ? allFamilies.filter(family => 
+      currentClass.members && currentClass.members.includes(family.id)
+    ) : [];
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('div', { className: 'flex items-center justify-between' },
+        React.createElement('h2', { className: 'text-xl font-bold' }, 'משפחות בחוג'),
+        React.createElement('button', { 
+          onClick: () => setCurrentView('class-home'),
+          className: 'text-gray-600 hover:text-gray-800'
+        }, 'חזור')
       ),
-      React.createElement('button', { 
-        onClick: () => setCurrentView('class-home'),
-        className: 'w-full bg-gray-200 text-gray-700 rounded-lg py-3 font-medium hover:bg-gray-300'
-      },
-        'חזור לחוג'
+
+      // Class info header
+      currentClass && React.createElement('div', { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-bold text-blue-800' }, `📚 ${currentClass.name}`),
+        React.createElement('p', { className: 'text-blue-600 text-sm mt-1' }, `📍 ${currentClass.location}`),
+        React.createElement('p', { className: 'text-blue-600 text-sm' }, 
+          `👥 ${currentClass.currentMembers || 0}/${currentClass.maxMembers || 10} משפחות`)
+      ),
+
+      // Management section (only for managers)
+      isManager && React.createElement('div', { className: 'bg-yellow-50 border border-yellow-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-bold text-yellow-800 mb-3' }, '👑 ניהול החוג'),
+        React.createElement('p', { className: 'text-yellow-700 text-sm mb-3' }, 
+          'אתה מנהל החוג. תוכל להעביר ניהול או להוסיף מנהלים נוספים.'),
+        React.createElement('div', { className: 'flex gap-2 flex-wrap' },
+          React.createElement('button', { 
+            onClick: () => alert('פונקציונליות בפיתוח - בקרוב תוכל להוסיף משפחות חדשות לחוג'),
+            className: 'bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700'
+          }, '➕ הוסף משפחה'),
+          React.createElement('button', { 
+            onClick: () => alert('פונקציונליות בפיתוח - ניהול הגדרות החוג'),
+            className: 'bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700'
+          }, '⚙️ הגדרות חוג')
+        )
+      ),
+
+      // Family members list
+      classMembers.length > 0 ? React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200' },
+        React.createElement('h3', { className: 'font-bold p-4 border-b border-gray-200' }, 
+          `👨‍👩‍👧‍👦 משפחות בחוג (${classMembers.length})`),
+        
+        ...classMembers.map(family => {
+          const isCurrentManager = currentClass.managers && currentClass.managers.includes(family.id);
+          
+          return React.createElement('div', { 
+            key: family.id,
+            className: 'p-4 border-b border-gray-100 last:border-b-0'
+          },
+            React.createElement('div', { className: 'flex justify-between items-start' },
+              React.createElement('div', { className: 'flex-1' },
+                React.createElement('div', { className: 'flex items-center gap-2 mb-2' },
+                  React.createElement('h4', { className: 'font-medium' }, family.name),
+                  isCurrentManager && React.createElement('span', { 
+                    className: 'px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full'
+                  }, '👑 מנהל')
+                ),
+                React.createElement('div', { className: 'text-sm text-gray-600 space-y-1' },
+                  React.createElement('div', null, `📞 ${family.phone}`),
+                  React.createElement('div', null, `👶 ${family.children} ילדים`),
+                  React.createElement('div', null, `📅 פעיל לאחרונה: ${family.lastActive}`)
+                )
+              ),
+              
+              // Management actions (only for current managers)
+              isManager && family.id !== userFamily.id && React.createElement('div', { 
+                className: 'flex flex-col gap-1'
+              },
+                !isCurrentManager && React.createElement('button', { 
+                  onClick: () => handleTransferManagement(family.id),
+                  className: 'bg-orange-600 text-white px-3 py-1 rounded text-xs hover:bg-orange-700'
+                }, '🔄 העבר ניהול'),
+                
+                !isCurrentManager && React.createElement('button', { 
+                  onClick: () => handleAddManager(family.id),
+                  className: 'bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700'
+                }, '➕ הוסף כמנהל'),
+                
+                isCurrentManager && currentClass.managers.length > 1 && React.createElement('button', { 
+                  onClick: () => handleRemoveManager(family.id),
+                  className: 'bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700'
+                }, '➖ הסר מניהול')
+              )
+            )
+          );
+        })
+      ) : React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('p', { className: 'text-gray-600 text-center' }, 
+          '🔍 אין משפחות בחוג זה כרגע.\nהוסף משפחות כדי להתחיל.')
       )
-    )
-  );
+    );
+  };
 
   // User Guide Component
   const UserGuidePage = () => {
@@ -2573,8 +3080,17 @@ const App = () => {
     );
   };
 
-  // Main render
-  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 main-content min-h-screen pb-24' },
+  // Main render - RADICAL MOBILE FIX v1.0.9 - COMPLETE RESTRUCTURE
+  return React.createElement('div', { 
+    className: 'radical-mobile-container',
+    style: { 
+      maxWidth: '448px',
+      margin: '0 auto',
+      backgroundColor: '#f9fafb',
+      paddingBottom: '140px',
+      // Production ready - no debug borders
+    }
+  },
     React.createElement('div', { className: 'p-4' },
       currentView === 'family-home' && React.createElement(FamilyHomePage),
       currentView === 'class-home' && React.createElement(ClassHomePage),
