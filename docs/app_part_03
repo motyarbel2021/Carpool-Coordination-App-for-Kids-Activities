@@ -1,0 +1,207 @@
+              React.createElement('span', null, slot.label + ' (' + slot.time + ')')
+            )
+          )
+        )
+      ),
+
+      // Weekly Availability Grid
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'בחר זמינות שבועית'),
+        
+        React.createElement('div', { className: 'space-y-4' },
+          days.map(day => {
+            const dayData = weeklyAvailability[day];
+            const selectedCount = Object.values(dayData).filter(Boolean).length;
+            
+            return React.createElement('div', { key: day, className: 'border border-gray-200 rounded-lg p-3' },
+              React.createElement('div', { className: 'flex items-center justify-between mb-3' },
+                React.createElement('h4', { className: 'font-medium text-lg' }, day),
+                React.createElement('div', { className: 'flex space-x-2 space-x-reverse' },
+                  React.createElement('button', {
+                    onClick: () => selectAllDay(day),
+                    className: 'px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200'
+                  }, 'בחר הכל'),
+                  React.createElement('button', {
+                    onClick: () => clearAllDay(day),
+                    className: 'px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200'
+                  }, 'נקה הכל'),
+                  React.createElement('span', { className: 'text-sm text-gray-600' },
+                    selectedCount + '/3'
+                  )
+                )
+              ),
+              
+              React.createElement('div', { className: 'grid grid-cols-3 gap-2' },
+                timeSlots.map(slot =>
+                  React.createElement('button', {
+                    key: slot.key,
+                    onClick: () => toggleAvailability(day, slot.key),
+                    className: 'p-3 rounded-lg border transition-all ' + (
+                      dayData[slot.key]
+                        ? 'bg-' + slot.color + '-100 border-' + slot.color + '-300 text-' + slot.color + '-800'
+                        : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                    )
+                  },
+                    React.createElement('div', { className: 'text-sm font-medium' }, slot.label),
+                    React.createElement('div', { className: 'text-xs mt-1' }, slot.time),
+                    dayData[slot.key] && React.createElement('div', { className: 'text-lg mt-1' }, '✓')
+                  )
+                )
+              )
+            );
+          })
+        )
+      ),
+
+      // Action Buttons
+      React.createElement('div', { className: 'flex space-x-4 space-x-reverse' },
+        React.createElement('button', { 
+          onClick: saveAvailability,
+          className: 'flex-1 bg-blue-600 text-white rounded-lg py-3 font-medium hover:bg-blue-700'
+        }, 'שמור זמינות'),
+        React.createElement('button', { 
+          onClick: () => setCurrentView('class-home'),
+          className: 'flex-1 bg-gray-200 text-gray-700 rounded-lg py-3 font-medium hover:bg-gray-300'
+        }, 'ביטול')
+      )
+    );
+  };
+
+  const ClassFamiliesPage = () => (
+    React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('h2', { className: 'text-xl font-bold' }, 'משפחות בחוג'),
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('p', { className: 'text-gray-600' }, 'רשימת המשפחות תבוא בקרוב...')
+      ),
+      React.createElement('button', { 
+        onClick: () => setCurrentView('class-home'),
+        className: 'w-full bg-gray-200 text-gray-700 rounded-lg py-3 font-medium hover:bg-gray-300'
+      },
+        'חזור לחוג'
+      )
+    )
+  );
+
+  // User Guide Component
+  const UserGuidePage = () => {
+    const guideSection = [
+      {
+        id: 'overview',
+        title: '🏠 סקירה כללית',
+        content: '**ברוכים הבאים לאפליקציית הסעות החוג!**\n\nהאפליקציה מיועדת לעזור למשפחות לתאם הסעות לחוגים בצורה הוגנת ויעילה.\n\n**עקרונות עבודה:**\n• כל משפחה ממלאה זמינות שבועית\n• המערכת יוצרת שיבוץ אוטומטי והוגן\n• עוזר חכם מעבד שינויים מהמאמן\n• מעקב אחר איזון הנסיעות בין המשפחות\n\n**התחלה מהירה:**\n1. מלא פרטים אישיים בהגדרות\n2. הוסף ילדים וחוגים\n3. מלא זמינות שבועית\n4. קבל שיבוץ אוטומטי'
+      },
+      {
+        id: 'home',
+        title: '🏠 מסך הבית',
+        content: '**מסך הבית - מרכז הבקרה שלך**\n\n**סטטיסטיקות מהירות:**\n• מספר החוגים הפעילים במשפחה\n• מספר הילדים\n• מספר המשימות השבוע\n\n**התראות חשובות:**\n• תזכורות למילוי זמינות\n• שיבוצים חדשים\n• שינויים בחוגים\n• ימי הולדת של ילדים מהחוגים\n\n**רשימת ילדים וחוגים:**\n• לחיצה על חוג מעבירה לניהול החוג הספציפי\n• כפתור הוסף חוג לכל ילד\n• כפתור הוסף ילד למשפחה'
+      },
+      {
+        id: 'assistant',
+        title: '🤖 עוזר החוגים',
+        content: '**העוזר החכם שלך לניהול שינויים**\n\n**איך זה עובד:**\n1. המאמן שולח הודעה בקבוצת הוואטסאפ או שיש לך מצב חירום\n2. העתק והדבק את ההודעה בעוזר או כתוב על המצב\n3. העוזר מזהה את השינוי ומגיב בהתאם\n4. במקרי חירום - פעולה מיידית, במקרים רגילים - מילוי זמינות מחדש\n\n**🚨 מצבי חירום (טיפול מיידי):**\n• הורה חולה ולא יכול להסיע/לאסוף\n• ילד חולה ולא יכול להגיע לחוג\n• מצבי חירום משפחתיים\n• תקלות ברכב בזמן אמת\n\n**📅 שינויים מתוכננים (דרך מילוי זמינות):**\n• ביטולי חוגים מהמאמן\n• שינויי שעות קבועים\n• שינויי מיקום\n• בקשות החלפה מתוכננות מראש\n• לוחות זמנים חדשים'
+      }
+    ];
+
+    const currentSection = guideSection.find(section => section.id === userGuideSection) || guideSection[0];
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('h2', { className: 'text-xl font-bold' }, '📖 מדריך למשתמש'),
+      
+      // Section Navigation
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-3' }, 'בחר נושא:'),
+        React.createElement('div', { className: 'grid grid-cols-1 gap-2' },
+          guideSection.map(section =>
+            React.createElement('button', {
+              key: section.id,
+              onClick: () => setUserGuideSection(section.id),
+              className: 'p-2 text-sm rounded-lg border transition-colors ' + (
+                userGuideSection === section.id
+                  ? 'bg-blue-100 border-blue-300 text-blue-800'
+                  : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+              )
+            }, section.title)
+          )
+        )
+      ),
+
+      // Current Section Content
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-6' },
+        React.createElement('h3', { className: 'text-lg font-bold mb-4 text-blue-800' }, currentSection.title),
+        
+        React.createElement('div', { className: 'prose prose-sm max-w-none' },
+          currentSection.content.trim().split('\n').map((line, index) => {
+            if (line.startsWith('**') && line.endsWith('**')) {
+              return React.createElement('h4', { key: index, className: 'font-semibold text-gray-800 mt-4 mb-2' },
+                line.replace(/\*\*/g, '')
+              );
+            } else if (line.startsWith('• ')) {
+              return React.createElement('li', { key: index, className: 'text-gray-700 mb-1 mr-4' },
+                line.substring(2)
+              );
+            } else if (line.trim() === '') {
+              return React.createElement('br', { key: index });
+            } else {
+              return React.createElement('p', { key: index, className: 'text-gray-700 mb-2' }, line);
+            }
+          })
+        )
+      ),
+
+      // Quick Access
+      React.createElement('div', { className: 'bg-green-50 border border-green-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-medium text-green-800 mb-2' }, '🚀 גישה מהירה'),
+        React.createElement('div', { className: 'grid grid-cols-2 gap-2' },
+          React.createElement('button', {
+            onClick: () => setCurrentView('family-home'),
+            className: 'p-2 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200'
+          }, 'לך לבית'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('waiting-room'),
+            className: 'p-2 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200'
+          }, 'חדר המתנה'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('settings'),
+            className: 'p-2 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200'
+          }, 'לך להגדרות'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('chatbot'),
+            className: 'p-2 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200'
+          }, 'לך לעוזר')
+        )
+      )
+    );
+  };
+
+  // Main render
+  return React.createElement('div', { className: 'max-w-md mx-auto bg-gray-50 min-h-screen pb-20' },
+    React.createElement('div', { className: 'p-4' },
+      currentView === 'family-home' && React.createElement(FamilyHomePage),
+      currentView === 'class-home' && React.createElement(ClassHomePage),
+      currentView === 'availability' && React.createElement(AvailabilityPage),
+      currentView === 'class-families' && React.createElement(ClassFamiliesPage),
+      currentView === 'waiting-room' && React.createElement(WaitingRoomPage),
+      currentView === 'create-group' && React.createElement(CreateGroupPage),
+      currentView === 'settings' && React.createElement(SettingsPage),
+      currentView === 'chatbot' && React.createElement(ChatBotPage),
+      currentView === 'user-guide' && React.createElement(UserGuidePage),
+      currentView === 'class-add-edit' && React.createElement(ClassAddEditPage),
+      currentView === 'add-child' && React.createElement(AddChildPage),
+      showAdminLogin && React.createElement(AdminLogin),
+      currentView === 'admin-dashboard' && React.createElement(AdminDashboard),
+      currentView === 'admin-families' && React.createElement(AdminFamiliesPage),
+      currentView === 'admin-classes' && React.createElement(AdminClassesPage),
+      currentView === 'admin-reports' && React.createElement(AdminReportsPage)
+    ),
+    
+    React.createElement(Navigation)
+  );
+};
+
+// Render the app
+const root = ReactDOM.createRoot ? ReactDOM.createRoot(document.getElementById('root')) : null;
+if (root) {
+  root.render(React.createElement(App));
+} else {
+  ReactDOM.render(React.createElement(App), document.getElementById('root'));
+}

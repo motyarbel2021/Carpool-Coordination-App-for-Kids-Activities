@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!-- FULL APP CONTENT FOR IFRAME - GUARANTEED SCROLLING -->
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תוכן אפליקציה מלא</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* IFRAME CONTENT - FORCE NATURAL SCROLLING */
+        html {
+            height: auto;
+            overflow: auto;
+        }
+        
+        body {
+            height: auto;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            background: #f9fafb;
+        }
+        
+        #root {
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+        }
+        
+        .app-container {
+            max-width: 448px;
+            margin: 0 auto;
+            background: #f9fafb;
+            padding-bottom: 100px;
+            /* Remove debug border for production */
+            /* border: 3px solid green; */
+        }
+        
+        /* RTL support */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        
+        .space-x-reverse > * + * {
+            margin-left: 0.5rem;
+            margin-right: 0;
+        }
+        
+        .space-x-2.space-x-reverse > * + * {
+            margin-left: 0.5rem;
+            margin-right: 0;
+        }
+        
+        .space-x-4.space-x-reverse > * + * {
+            margin-left: 1rem;
+            margin-right: 0;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            
+            button, input, textarea {
+                font-size: 16px;
+                min-height: 44px;
+            }
+            
+            /* Larger touch targets */
+            button, .btn, .clickable {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Card spacing */
+            .card, .bg-white {
+                margin: 0.5rem;
+                border-radius: 12px;
+            }
+        }
+        
+        /* Success banner */
+        .success-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <!-- Include the full app.js content inline -->
+    <script type="text/babel">
+        // Full React app content will be embedded here
+    </script>
+    
+    <script>
+        console.log('🚀 FULL APP CONTENT - IFRAME VERSION - Loaded successfully');
+        
+        // Remove debug elements once confirmed working
+        setTimeout(() => {
+            const debugElements = document.querySelectorAll('[style*="border"]');
+            debugElements.forEach(el => {
+                if (el.style.border.includes('green')) {
+                    el.style.border = 'none';
+                }
+            });
+        }, 5000); // Remove green borders after 5 seconds
+    </script>
+</body>
+</html>

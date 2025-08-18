@@ -1,0 +1,800 @@
+                  React.createElement('span', { className: 'text-red-500' }, '*')
+                ),
+                React.createElement('input', { 
+                  type: 'text', 
+                  placeholder: 'רחל',
+                  defaultValue: familyData.parents.parent2.name,
+                  className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                  required: true
+                })
+              ),
+              React.createElement('div', null,
+                React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                  'טלפון ',
+                  React.createElement('span', { className: 'text-red-500' }, '*')
+                ),
+                React.createElement('input', { 
+                  type: 'tel', 
+                  placeholder: '052-987-6543',
+                  defaultValue: familyData.parents.parent2.phone,
+                  className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                  required: true
+                })
+              ),
+              React.createElement('div', null,
+                React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                  'אימייל (רשות)'
+                ),
+                React.createElement('input', { 
+                  type: 'email', 
+                  placeholder: 'rachel@gmail.com',
+                  defaultValue: familyData.parents.parent2.email,
+                  className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+                })
+              )
+            )
+          )
+        )
+      ),
+
+      // Children Section
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'ילדים במשפחה'),
+        React.createElement('div', { className: 'space-y-4' },
+          familyData.children.map((child, index) => 
+            React.createElement('div', { key: child.id, className: 'bg-gray-50 rounded-lg p-4 border border-gray-200' },
+              React.createElement('div', { className: 'flex justify-between items-center mb-3' },
+                React.createElement('h4', { className: 'font-medium' }, 'ילד ' + (index + 1)),
+                React.createElement('button', { className: 'text-red-600 text-sm hover:text-red-800' }, 'הסר')
+              ),
+              
+              React.createElement('div', { className: 'space-y-3' },
+                React.createElement('div', null,
+                  React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                    'שם הילד ',
+                    React.createElement('span', { className: 'text-red-500' }, '*')
+                  ),
+                  React.createElement('input', { 
+                    type: 'text', 
+                    value: child.name,
+                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                    required: true
+                  })
+                ),
+                
+                React.createElement('div', null,
+                  React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                    'טלפון הילד (רשות)'
+                  ),
+                  React.createElement('input', { 
+                    type: 'tel', 
+                    value: child.phone || '',
+                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+                  })
+                ),
+                
+                React.createElement('div', null,
+                  React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                    'תאריך לידה (רשות)'
+                  ),
+                  React.createElement('input', { 
+                    type: 'date', 
+                    value: child.birthDate || '',
+                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+                  }),
+                  child.birthDate && React.createElement('div', { className: 'text-xs text-gray-500 mt-1' },
+                    'גיל: ' + calculateAge(child.birthDate) + ' שנים'
+                  )
+                ),
+
+                React.createElement('div', null,
+                  React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                    'כתובת הבית ',
+                    React.createElement('span', { className: 'text-red-500' }, '*')
+                  ),
+                  React.createElement('input', { 
+                    type: 'text', 
+                    value: child.address || '',
+                    className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                    required: true
+                  })
+                )
+              ),
+
+              // Child's Classes
+              React.createElement('div', { className: 'mt-4' },
+                React.createElement('h5', { className: 'font-medium text-sm mb-2' }, 'חוגים:'),
+                React.createElement('div', { className: 'space-y-1 text-sm text-gray-600' },
+                  child.classes.map(cls =>
+                    React.createElement('div', { key: cls.id, className: 'flex justify-between items-center' },
+                      React.createElement('span', null, cls.name + ' - ' + cls.location),
+                      React.createElement('button', { 
+                        onClick: () => alert('עריכת חוג: ' + cls.name),
+                        className: 'text-blue-600 hover:text-blue-800'
+                      }, 'ערוך')
+                    )
+                  )
+                ),
+                React.createElement('button', { 
+                  onClick: () => setCurrentView('class-add-edit'),
+                  className: 'mt-2 text-blue-600 text-sm hover:text-blue-800'
+                }, '+ הוסף חוג')
+              )
+            )
+          )
+        ),
+        
+        React.createElement('button', { 
+          onClick: () => setCurrentView('add-child'),
+          className: 'w-full mt-4 py-3 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors'
+        }, '+ הוסף ילד למשפחה')
+      ),
+
+      // Notifications Settings
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4 flex items-center' },
+          React.createElement(Icon, { name: 'fas fa-bell', className: 'w-5 h-5 ml-2 text-yellow-500' }),
+          'הגדרות התראות'
+        ),
+        React.createElement('div', { className: 'space-y-4' },
+          React.createElement('div', { className: 'flex justify-between items-center' },
+            React.createElement('span', { className: 'text-sm' }, 'תזכורת למילוי זמינות'),
+            React.createElement('label', { className: 'relative inline-flex items-center cursor-pointer' },
+              React.createElement('input', { type: 'checkbox', className: 'sr-only peer', defaultChecked: true }),
+              React.createElement('div', { 
+                className: 'w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600'
+              })
+            )
+          ),
+          
+          React.createElement('div', { className: 'flex justify-between items-center' },
+            React.createElement('span', { className: 'text-sm' }, 'התראה על שיבוץ חדש'),
+            React.createElement('label', { className: 'relative inline-flex items-center cursor-pointer' },
+              React.createElement('input', { type: 'checkbox', className: 'sr-only peer', defaultChecked: true }),
+              React.createElement('div', { 
+                className: 'w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600'
+              })
+            )
+          ),
+          
+          React.createElement('div', { className: 'flex justify-between items-center' },
+            React.createElement('span', { className: 'text-sm' }, 'תזכורת נסיעה'),
+            React.createElement('label', { className: 'relative inline-flex items-center cursor-pointer' },
+              React.createElement('input', { type: 'checkbox', className: 'sr-only peer', defaultChecked: true }),
+              React.createElement('div', { 
+                className: 'w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600'
+              })
+            )
+          )
+        )
+      ),
+
+      // App Settings
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'הגדרות כלליות'),
+        React.createElement('div', { className: 'space-y-3' },
+          React.createElement('button', { 
+            onClick: () => setCurrentView('user-guide'),
+            className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between'
+          },
+            React.createElement('span', null, '📖 מדריך למשתמש'),
+            React.createElement('span', { className: 'text-blue-600' }, '←')
+          ),
+          React.createElement('button', { 
+            onClick: () => alert('ייצוא נתונים בפיתוח'),
+            className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
+          }, 'ייצוא נתונים'),
+          React.createElement('button', { 
+            onClick: () => alert('פתיחת צ׳אט תמיכה'),
+            className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
+          }, 'צור קשר עם תמיכה'),
+          React.createElement('button', { 
+            onClick: () => alert('מדיניות פרטיות'),
+            className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
+          }, 'מדיניות פרטיות')
+        )
+      ),
+
+      React.createElement('button', { 
+        onClick: () => alert('השינויים נשמרו בהצלחה!'),
+        className: 'w-full bg-blue-600 text-white rounded-lg py-3 font-medium hover:bg-blue-700'
+      }, 'שמור שינויים'),
+
+      React.createElement('div', { className: 'text-center text-sm text-gray-500' },
+        'גרסה 2.0.0 • אפליקציית הסעות חוג'
+      )
+    )
+  );
+
+  const WaitingRoomPage = () => {
+    const cities = [...new Set(availableClasses.map(c => c.city))];
+    const classTypes = [...new Set(availableClasses.map(c => c.name))];
+    
+    const filteredClasses = availableClasses.filter(classItem => {
+      const matchesCity = !waitingRoomFilters.city || classItem.city === waitingRoomFilters.city;
+      const matchesType = !waitingRoomFilters.classType || classItem.name === waitingRoomFilters.classType;
+      const matchesSearch = !waitingRoomFilters.searchText || 
+        classItem.name.includes(waitingRoomFilters.searchText) ||
+        classItem.coach.includes(waitingRoomFilters.searchText) ||
+        classItem.location.includes(waitingRoomFilters.searchText) ||
+        classItem.id.includes(waitingRoomFilters.searchText) ||
+        classItem.description.includes(waitingRoomFilters.searchText);
+      const matchesFullFilter = waitingRoomFilters.showFullGroups || classItem.currentMembers < classItem.maxMembers;
+      
+      return matchesCity && matchesType && matchesSearch && matchesFullFilter;
+    });
+
+    const joinGroup = (classId) => {
+      const classItem = availableClasses.find(c => c.id === classId);
+      if (classItem && classItem.currentMembers < classItem.maxMembers) {
+        alert('נשלחה בקשה להצטרפות לקבוצת ' + classItem.name + ' - ' + classItem.location + '. המנהל יחזור אליך בהקדם.');
+      }
+    };
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('div', { className: 'flex items-center justify-between' },
+        React.createElement('h2', { className: 'text-xl font-bold' }, '🔍 חדר המתנה'),
+        React.createElement('button', { 
+          onClick: () => setCurrentView('create-group'),
+          className: 'bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700'
+        },
+          '+ צור קבוצה חדשה'
+        )
+      ),
+
+      React.createElement('div', { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4' },
+        React.createElement('div', { className: 'flex items-center mb-2' },
+          React.createElement('span', { className: 'text-2xl ml-3' }, '👋'),
+          React.createElement('div', null,
+            React.createElement('h3', { className: 'font-bold text-blue-800' }, 'מחפש קבוצת הסעות?'),
+            React.createElement('p', { className: 'text-blue-700 text-sm' },
+              'כאן תמצא קבוצות הסעה פתוחות לחוגים שונים באזור שלך'
+            )
+          )
+        )
+      ),
+
+      // Filters
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, '🔍 סינון וחיפוש'),
+        
+        React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4 mb-4' },
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'עיר'),
+            React.createElement('select', {
+              value: waitingRoomFilters.city,
+              onChange: (e) => setWaitingRoomFilters(prev => ({ ...prev, city: e.target.value })),
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            },
+              React.createElement('option', { value: '' }, 'כל הערים'),
+              cities.map(city => React.createElement('option', { key: city, value: city }, city))
+            )
+          ),
+          
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'סוג חוג'),
+            React.createElement('select', {
+              value: waitingRoomFilters.classType,
+              onChange: (e) => setWaitingRoomFilters(prev => ({ ...prev, classType: e.target.value })),
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            },
+              React.createElement('option', { value: '' }, 'כל החוגים'),
+              classTypes.map(type => React.createElement('option', { key: type, value: type }, type))
+            )
+          )
+        ),
+
+        React.createElement('div', { className: 'mb-4' },
+          React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'חיפוש חופשי'),
+          React.createElement('input', {
+            type: 'text',
+            value: waitingRoomFilters.searchText,
+            onChange: (e) => setWaitingRoomFilters(prev => ({ ...prev, searchText: e.target.value })),
+            placeholder: 'חפש לפי שם חוג, מאמן, מיקום או מספר חוג...',
+            className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+          })
+        ),
+
+        React.createElement('div', { className: 'flex items-center' },
+          React.createElement('input', {
+            type: 'checkbox',
+            id: 'showFull',
+            checked: waitingRoomFilters.showFullGroups,
+            onChange: (e) => setWaitingRoomFilters(prev => ({ ...prev, showFullGroups: e.target.checked })),
+            className: 'ml-2'
+          }),
+          React.createElement('label', { htmlFor: 'showFull', className: 'text-sm' }, 'הצג גם קבוצות מלאות')
+        )
+      ),
+
+      // Results
+      React.createElement('div', { className: 'space-y-4' },
+        React.createElement('div', { className: 'flex justify-between items-center' },
+          React.createElement('h3', { className: 'font-medium' }, 'תוצאות חיפוש'),
+          React.createElement('span', { className: 'text-sm text-gray-600' }, filteredClasses.length + ' חוגים נמצאו')
+        ),
+
+        filteredClasses.map(classItem =>
+          React.createElement('div', { key: classItem.id, className: 'bg-white rounded-lg border border-gray-200 p-4' },
+            React.createElement('div', { className: 'flex justify-between items-start mb-3' },
+              React.createElement('div', { className: 'flex-1' },
+                React.createElement('div', { className: 'flex items-center mb-2' },
+                  React.createElement('h4', { className: 'font-bold text-lg text-blue-600' }, classItem.name),
+                  React.createElement('span', { 
+                    className: 'bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs mr-2'
+                  }, '#' + classItem.id),
+                  React.createElement('span', { 
+                    className: 'px-2 py-1 rounded-full text-xs ' + (
+                      classItem.currentMembers < classItem.maxMembers 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-red-100 text-red-700'
+                    )
+                  }, classItem.currentMembers + '/' + classItem.maxMembers + ' מקומות')
+                ),
+                
+                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-2' },
+                  React.createElement('div', null, '📍 ' + classItem.location + ', ' + classItem.city),
+                  React.createElement('div', null, '🕐 ' + classItem.schedule),
+                  React.createElement('div', null, '👨‍🏫 מאמן: ' + classItem.coach),
+                  React.createElement('div', null, '👶 גילאים: ' + classItem.ageGroup)
+                ),
+                
+                React.createElement('p', { className: 'text-sm text-gray-700 mb-3' }, classItem.description),
+                
+                React.createElement('div', { className: 'bg-gray-50 rounded p-2 text-sm' },
+                  React.createElement('strong', null, 'מנהל הקבוצה: '), classItem.manager
+                )
+              )
+            ),
+
+            React.createElement('div', { className: 'flex space-x-2 space-x-reverse' },
+              classItem.currentMembers < classItem.maxMembers ? (
+                React.createElement('button', {
+                  onClick: () => joinGroup(classItem.id),
+                  className: 'flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium'
+                }, '🤝 בקש להצטרף')
+              ) : (
+                React.createElement('button', {
+                  disabled: true,
+                  className: 'flex-1 bg-gray-300 text-gray-500 py-2 px-4 rounded-lg text-sm font-medium cursor-not-allowed'
+                }, '🚫 קבוצה מלאה')
+              ),
+              
+              React.createElement('button', {
+                onClick: () => alert('מתקשר ל' + classItem.manager + ' - ' + classItem.managerPhone),
+                className: 'px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm'
+              }, '📞 התקשר למנהל'),
+              
+              React.createElement('button', {
+                onClick: () => alert('נווט אל ' + classItem.address),
+                className: 'px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm'
+              }, '🗺️ מיקום')
+            )
+          )
+        ),
+
+        filteredClasses.length === 0 && React.createElement('div', { className: 'text-center py-8' },
+          React.createElement('div', { className: 'text-4xl mb-4' }, '🔍'),
+          React.createElement('h3', { className: 'text-lg font-medium text-gray-600 mb-2' }, 'לא נמצאו חוגים'),
+          React.createElement('p', { className: 'text-gray-500 mb-4' }, 'נסה לשנות את קריטריוני החיפוש או צור קבוצה חדשה'),
+          React.createElement('button', { 
+            onClick: () => setCurrentView('create-group'),
+            className: 'bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700'
+          }, '+ צור קבוצה חדשה')
+        )
+      )
+    );
+  };
+
+  // Create Group Component
+  const CreateGroupPage = () => {
+    const [newGroupForm, setNewGroupForm] = useState({
+      name: '',
+      city: '',
+      location: '',
+      address: '',
+      coach: '',
+      coachPhone: '',
+      schedule: '',
+      ageGroup: '',
+      maxMembers: 8,
+      description: ''
+    });
+
+    const handleCreateGroup = () => {
+      if (!newGroupForm.name || !newGroupForm.city || !newGroupForm.location) {
+        alert('אנא מלא את השדות החובה');
+        return;
+      }
+
+      const newId = 'CLS' + String(availableClasses.length + 1).padStart(3, '0');
+      const newClass = {
+        ...newGroupForm,
+        id: newId,
+        currentMembers: 1,
+        manager: familyData.familyName,
+        managerPhone: familyData.parents.parent1.phone
+      };
+
+      setAvailableClasses(prev => [...prev, newClass]);
+      alert('קבוצה חדשה נוצרה בהצלחה! מספר חוג: ' + newId);
+      setCurrentView('waiting-room');
+    };
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('div', { className: 'flex items-center justify-between' },
+        React.createElement('h2', { className: 'text-xl font-bold' }, '+ צור קבוצת הסעות חדשה'),
+        React.createElement('button', { 
+          onClick: () => setCurrentView('waiting-room'),
+          className: 'text-gray-600 hover:text-gray-800'
+        }, 'ביטול')
+      ),
+
+      React.createElement('div', { className: 'bg-green-50 border border-green-200 rounded-lg p-4' },
+        React.createElement('div', { className: 'flex items-center mb-2' },
+          React.createElement('span', { className: 'text-2xl ml-3' }, '🚀'),
+          React.createElement('div', null,
+            React.createElement('h3', { className: 'font-bold text-green-800' }, 'התחל קבוצת הסעות חדשה!'),
+            React.createElement('p', { className: 'text-green-700 text-sm' },
+              'מלא את פרטי החוג והקבוצה תופיע בחדר המתנה להורים אחרים'
+            )
+          )
+        )
+      ),
+
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'פרטי החוג'),
+        React.createElement('div', { className: 'space-y-4' },
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+              'שם החוג ',
+              React.createElement('span', { className: 'text-red-500' }, '*')
+            ),
+            React.createElement('input', {
+              type: 'text',
+              value: newGroupForm.name,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, name: e.target.value })),
+              placeholder: 'כדורסל, שחייה, ריקוד...',
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              required: true
+            })
+          ),
+
+          React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4' },
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+                'עיר ',
+                React.createElement('span', { className: 'text-red-500' }, '*')
+              ),
+              React.createElement('input', {
+                type: 'text',
+                value: newGroupForm.city,
+                onChange: (e) => setNewGroupForm(prev => ({ ...prev, city: e.target.value })),
+                placeholder: 'תל אביב, רמת גן...',
+                className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+                required: true
+              })
+            ),
+
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'גילאים'),
+              React.createElement('input', {
+                type: 'text',
+                value: newGroupForm.ageGroup,
+                onChange: (e) => setNewGroupForm(prev => ({ ...prev, ageGroup: e.target.value })),
+                placeholder: '8-12, 10-14...',
+                className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              })
+            )
+          ),
+
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+              'מיקום החוג ',
+              React.createElement('span', { className: 'text-red-500' }, '*')
+            ),
+            React.createElement('input', {
+              type: 'text',
+              value: newGroupForm.location,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, location: e.target.value })),
+              placeholder: 'בית ספר אילון, בריכת העיר...',
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              required: true
+            })
+          ),
+
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'כתובת מדויקת'),
+            React.createElement('input', {
+              type: 'text',
+              value: newGroupForm.address,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, address: e.target.value })),
+              placeholder: 'רח׳ הרצל 45, תל אביב',
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            })
+          ),
+
+          React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4' },
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'מאמן'),
+              React.createElement('input', {
+                type: 'text',
+                value: newGroupForm.coach,
+                onChange: (e) => setNewGroupForm(prev => ({ ...prev, coach: e.target.value })),
+                placeholder: 'דוד כהן',
+                className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              })
+            ),
+
+            React.createElement('div', null,
+              React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'טלפון מאמן'),
+              React.createElement('input', {
+                type: 'tel',
+                value: newGroupForm.coachPhone,
+                onChange: (e) => setNewGroupForm(prev => ({ ...prev, coachPhone: e.target.value })),
+                placeholder: '052-987-6543',
+                className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              })
+            )
+          ),
+
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'לוח זמנים'),
+            React.createElement('input', {
+              type: 'text',
+              value: newGroupForm.schedule,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, schedule: e.target.value })),
+              placeholder: 'ראשון, שלישי, חמישי 16:00-17:30',
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            })
+          ),
+
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+              'מספר משתתפים מקסימלי'
+            ),
+            React.createElement('input', {
+              type: 'number',
+              min: '2',
+              max: '20',
+              value: newGroupForm.maxMembers,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, maxMembers: parseInt(e.target.value) || 2 })),
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            }),
+            newGroupForm.maxMembers > 4 && React.createElement('div', { 
+              className: 'mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800' 
+            },
+              React.createElement('div', { className: 'flex items-center' },
+                React.createElement('span', { className: 'text-yellow-600 ml-1' }, '⚠️'),
+                React.createElement('span', null, 'שים לב: ודא שגודל הרכב מתאים לכמות הנוסעים (' + newGroupForm.maxMembers + ' ילדים + נהג)')
+              )
+            )
+          ),
+
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, 'תיאור החוג'),
+            React.createElement('textarea', {
+              value: newGroupForm.description,
+              onChange: (e) => setNewGroupForm(prev => ({ ...prev, description: e.target.value })),
+              placeholder: 'תאר את החוג, האווירה, מה מיוחד בו...',
+              rows: 3,
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+            })
+          )
+        )
+      ),
+
+      React.createElement('div', { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-medium text-blue-800 mb-2' }, 'אתה תהיה מנהל הקבוצה'),
+        React.createElement('p', { className: 'text-sm text-blue-700' },
+          'כמנהל הקבוצה, תוכל לאשר הצטרפות של הורים חדשים ולנהל את התיאום.'
+        )
+      ),
+
+      React.createElement('div', { className: 'flex space-x-4 space-x-reverse' },
+        React.createElement('button', {
+          onClick: handleCreateGroup,
+          className: 'flex-1 bg-green-600 text-white rounded-lg py-3 font-medium hover:bg-green-700'
+        }, '🚀 צור קבוצה'),
+        React.createElement('button', {
+          onClick: () => setCurrentView('waiting-room'),
+          className: 'flex-1 bg-gray-200 text-gray-700 rounded-lg py-3 font-medium hover:bg-gray-300'
+        }, 'ביטול')
+      )
+    );
+  };
+
+  // Admin Login Component
+  const AdminLogin = () => {
+    const handleAdminLogin = () => {
+      if (adminPassword === 'admin123') {
+        setIsAdminMode(true);
+        setShowAdminLogin(false);
+        setCurrentView('admin-dashboard');
+        setAdminPassword('');
+      } else {
+        alert('סיסמה שגויה!');
+        setAdminPassword('');
+      }
+    };
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('div', { className: 'flex items-center justify-between' },
+        React.createElement('h2', { className: 'text-xl font-bold' }, 'כניסה למנהל מערכת'),
+        React.createElement('button', { 
+          onClick: () => {
+            setShowAdminLogin(false);
+            setAdminPassword('');
+          },
+          className: 'text-gray-600 hover:text-gray-800'
+        }, 'ביטול')
+      ),
+
+      React.createElement('div', { className: 'bg-red-50 border border-red-200 rounded-lg p-4' },
+        React.createElement('div', { className: 'flex items-center mb-2' },
+          React.createElement('span', { className: 'text-2xl ml-3' }, '🔐'),
+          React.createElement('div', null,
+            React.createElement('h3', { className: 'font-bold text-red-800' }, 'אזור מוגבל - מנהלים בלבד'),
+            React.createElement('p', { className: 'text-red-700 text-sm' },
+              'הכנס סיסמה לגישה לפאנל הניהול'
+            )
+          )
+        )
+      ),
+
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('div', { className: 'space-y-4' },
+          React.createElement('div', null,
+            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
+              'סיסמת מנהל'
+            ),
+            React.createElement('input', { 
+              type: 'password', 
+              value: adminPassword,
+              onChange: (e) => setAdminPassword(e.target.value),
+              onKeyPress: (e) => e.key === 'Enter' && handleAdminLogin(),
+              placeholder: 'הכנס סיסמה',
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              autoFocus: true
+            })
+          )
+        ),
+        
+        React.createElement('div', { className: 'mt-4 text-xs text-gray-500' },
+          'לבדיקה: סיסמה = admin123'
+        )
+      ),
+
+      React.createElement('button', { 
+        onClick: handleAdminLogin,
+        className: 'w-full bg-red-600 text-white rounded-lg py-3 font-medium hover:bg-red-700'
+      }, 'התחבר כמנהל')
+    );
+  };
+
+  // Admin Dashboard Component
+  const AdminDashboard = () => {
+    const handleLogout = () => {
+      setIsAdminMode(false);
+      setCurrentView('family-home');
+    };
+
+    return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
+      React.createElement('div', { className: 'flex items-center justify-between' },
+        React.createElement('div', null,
+          React.createElement('h1', { className: 'text-2xl font-bold' }, '📊 לוח מחוונים - ניהול מערכת'),
+          React.createElement('p', { className: 'text-gray-600 text-sm' }, 'סקירה כללית של אפליקציית ההסעות')
+        ),
+        React.createElement('button', { 
+          onClick: handleLogout,
+          className: 'bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300'
+        }, 'יציאה')
+      ),
+
+      // System Overview Cards
+      React.createElement('div', { className: 'grid grid-cols-2 md:grid-cols-3 gap-4' },
+        React.createElement('div', { className: 'bg-blue-50 rounded-lg p-4 border border-blue-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-blue-600' }, systemStats.totalFamilies),
+          React.createElement('div', { className: 'text-sm text-blue-700' }, 'משפחות רשומות'),
+          React.createElement('div', { className: 'text-xs text-blue-600 mt-1' }, '👨‍👩‍👧‍👦 פעילות במערכת')
+        ),
+        React.createElement('div', { className: 'bg-green-50 rounded-lg p-4 border border-green-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-green-600' }, systemStats.totalChildren),
+          React.createElement('div', { className: 'text-sm text-green-700' }, 'ילדים במערכת'),
+          React.createElement('div', { className: 'text-xs text-green-600 mt-1' }, '👶 עם חוגים פעילים')
+        ),
+        React.createElement('div', { className: 'bg-purple-50 rounded-lg p-4 border border-purple-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-purple-600' }, systemStats.totalClasses),
+          React.createElement('div', { className: 'text-sm text-purple-700' }, 'חוגים פעילים'),
+          React.createElement('div', { className: 'text-xs text-purple-600 mt-1' }, '⚽ באזורים שונים')
+        ),
+        React.createElement('div', { className: 'bg-orange-50 rounded-lg p-4 border border-orange-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-orange-600' }, systemStats.activeTransportGroups),
+          React.createElement('div', { className: 'text-sm text-orange-700' }, 'קבוצות הסעות'),
+          React.createElement('div', { className: 'text-xs text-orange-600 mt-1' }, '🚗 פעילות כעת')
+        ),
+        React.createElement('div', { className: 'bg-yellow-50 rounded-lg p-4 border border-yellow-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-yellow-600' }, systemStats.pendingRequests),
+          React.createElement('div', { className: 'text-sm text-yellow-700' }, 'בקשות ממתינות'),
+          React.createElement('div', { className: 'text-xs text-yellow-600 mt-1' }, '⏳ הצטרפות לקבוצות')
+        ),
+        React.createElement('div', { className: 'bg-red-50 rounded-lg p-4 border border-red-200' },
+          React.createElement('div', { className: 'text-3xl font-bold text-red-600' }, systemStats.emergencyAlerts),
+          React.createElement('div', { className: 'text-sm text-red-700' }, 'תראות חירום'),
+          React.createElement('div', { className: 'text-xs text-red-600 mt-1' }, '⚠️ דורשות תשומת לב')
+        )
+      ),
+
+      // Quick Actions
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'פעולות מהירות'),
+        React.createElement('div', { className: 'grid grid-cols-2 md:grid-cols-4 gap-3' },
+          React.createElement('button', {
+            onClick: () => setCurrentView('admin-families'),
+            className: 'bg-blue-100 text-blue-700 p-3 rounded-lg hover:bg-blue-200 text-sm'
+          }, '👨‍👩‍👧‍👦 ניהול משפחות'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('admin-classes'),
+            className: 'bg-purple-100 text-purple-700 p-3 rounded-lg hover:bg-purple-200 text-sm'
+          }, '⚽ ניהול חוגים'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('admin-transports'),
+            className: 'bg-orange-100 text-orange-700 p-3 rounded-lg hover:bg-orange-200 text-sm'
+          }, '🚗 קבוצות הסעות'),
+          React.createElement('button', {
+            onClick: () => setCurrentView('admin-reports'),
+            className: 'bg-green-100 text-green-700 p-3 rounded-lg hover:bg-green-200 text-sm'
+          }, '📊 דוחות וסטטיסטיקות')
+        )
+      ),
+
+      // Recent Activity
+      React.createElement('div', { className: 'bg-white rounded-lg border border-gray-200 p-4' },
+        React.createElement('h3', { className: 'font-medium mb-4' }, 'פעילות אחרונה'),
+        React.createElement('div', { className: 'space-y-3' },
+          React.createElement('div', { className: 'flex items-center p-2 bg-blue-50 rounded' },
+            React.createElement('span', { className: 'ml-2' }, '🔵'),
+            React.createElement('span', { className: 'text-sm' }, 'משפחת כהן מילאה זמינות לחוג כדורסל'),
+            React.createElement('span', { className: 'mr-auto text-xs text-gray-500' }, '14:30')
+          ),
+          React.createElement('div', { className: 'flex items-center p-2 bg-green-50 rounded' },
+            React.createElement('span', { className: 'ml-2' }, '✅'),
+            React.createElement('span', { className: 'text-sm' }, 'קבוצת הסעות חדשה נוצרה - חוג שחייה'),
+            React.createElement('span', { className: 'mr-auto text-xs text-gray-500' }, '13:15')
+          ),
+          React.createElement('div', { className: 'flex items-center p-2 bg-red-50 rounded' },
+            React.createElement('span', { className: 'ml-2' }, '⚠️'),
+            React.createElement('span', { className: 'text-sm' }, 'עוזר חוגים טיפל בבקשת חירום'),
+            React.createElement('span', { className: 'mr-auto text-xs text-gray-500' }, '12:45')
+          )
+        )
+      )
+    );
+  };
+
+  // Add Child Component
+  const AddChildPage = () => {
+    const handleSaveChild = () => {
+      if (!childForm.name || !childForm.address) {
+        alert('אנא מלא את השדות החובה');
+        return;
+      }
+
+      const newChild = {
+        id: Date.now(),
+        name: childForm.name,
+        birthDate: childForm.birthDate,
+        phone: childForm.phone,
+        address: childForm.address,
+        classes: []
+      };
+
+      // Add child to familyData (in real app, would update backend)
+      console.log('הוספת ילד חדש:', newChild);
+      alert('הילד ' + childForm.name + ' נוסף בהצלחה למשפחה!');
+      
+      // Reset form and navigate back
+      setChildForm({ name: '', birthDate: '', phone: '', address: '' });
+      setCurrentView('family-home');
+    };
+
