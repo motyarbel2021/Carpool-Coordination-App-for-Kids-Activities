@@ -204,6 +204,167 @@ const App = () => {
 
   const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
 
+  // Utility functions for app management
+  const resetAppData = () => {
+    if (confirm('האם אתה בטוח שברצונך לאפס את כל הנתונים? פעולה זו בלתי הפיכה!')) {
+      // Reset all state variables to their initial values
+      setCurrentView('family-home');
+      setSelectedChild(null);
+      setSelectedClass(null);
+      setEditingClass(null);
+      setIsEditingClass(false);
+      setAvailability({});
+      setClassForm({
+        name: '',
+        addresses: [{ name: '', address: '' }],
+        sessions: [{ day: '', startTime: '', endTime: '', addressIndex: 0 }],
+        coachName: '',
+        coachPhone: '',
+        managerName: '',
+        managerPhone: '',
+        managerEmail: ''
+      });
+      setChatMessages([{
+        id: 1,
+        type: 'bot',
+        message: 'שלום! אני כאן לעזור לך לנהל שינויים בחוגים. תוכל להדביק הודעות מהוואטסאפ או לכתוב שינויים ישירות.',
+        timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setChatInput('');
+      setChildForm({
+        name: '',
+        birthDate: '',
+        phone: '',
+        address: ''
+      });
+      setWeeklyAvailability({
+        'ראשון': { morning: false, afternoon: false, evening: false },
+        'שני': { morning: false, afternoon: false, evening: false },
+        'שלישי': { morning: false, afternoon: false, evening: false },
+        'רביעי': { morning: false, afternoon: false, evening: false },
+        'חמישי': { morning: false, afternoon: false, evening: false },
+        'שישי': { morning: false, afternoon: false, evening: false },
+        'שבת': { morning: false, afternoon: false, evening: false }
+      });
+      setIsAdminMode(false);
+      setAdminPassword('');
+      setShowAdminLogin(false);
+      setWaitingRoomFilters({
+        city: '',
+        classType: '',
+        searchText: '',
+        showFullGroups: false
+      });
+      
+      // Clear any localStorage data if exists
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (error) {
+        console.log('No storage to clear');
+      }
+      
+      alert('🔄 האפליקציה אופסה בהצלחה! כל הנתונים נמחקו.');
+    }
+  };
+
+  const exportUserData = () => {
+    const userData = {
+      currentView,
+      availability,
+      weeklyAvailability,
+      childForm,
+      classForm,
+      waitingRoomFilters,
+      chatMessages: chatMessages.slice(1), // Remove default bot message
+      isClassManager,
+      exportDate: new Date().toLocaleString('he-IL'),
+      appVersion: '2.0.0'
+    };
+    
+    const dataStr = JSON.stringify(userData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'transport-app-data-' + new Date().toISOString().split('T')[0] + '.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    alert('📁 הנתונים יוצאו בהצלחה! הקובץ ירד למחשב.');
+  };
+
+  const openSupportContact = () => {
+    const supportInfo = `🎯 צור קשר עם תמיכה
+
+📧 אימייל: support@transport-app.co.il
+📱 טלפון: 03-1234567  
+💬 וואטסאפ: 050-1234567
+
+⏰ שעות פעילות:
+ראשון-חמישי: 8:00-18:00
+שישי: 8:00-12:00
+
+🌐 אתר: www.transport-app.co.il
+📍 כתובת: רחוב התחבורה 123, תל אביב
+
+💡 טיפים לפנייה יעילה:
+• ציין את מספר הגרסה (2.0.0)
+• תאר את הבעיה בפירוט
+• צרף צילומי מסך במידת הצורך`;
+    
+    alert(supportInfo);
+    
+    // Option to open WhatsApp or email
+    if (confirm('האם לפתוח את וואטסאפ לפנייה מהירה?')) {
+      window.open('https://wa.me/972501234567?text=שלום, אני צריך עזרה עם אפליקציית ניהול הסעות החוג', '_blank');
+    }
+  };
+
+  const openPrivacyPolicy = () => {
+    const privacyPolicy = `🔒 מדיניות פרטיות - אפליקציית ניהול הסעות החוג
+
+📋 איסוף מידע:
+• פרטים אישיים: שם, טלפון, כתובת
+• פרטי ילדים: שם, גיל, חוגים  
+• העדפות הסעה וזמינות
+• היסטורית שימוש באפליקציה
+
+🛡️ שימוש במידע:
+• תיאום הסעות בין משפחות
+• יצירת קשר עם הורים אחרים
+• שיפור שירותי האפליקציה
+• שליחת התראות והודעות רלוונטיות
+
+🔐 אבטחת מידע:
+• כל המידע מוצפן ומאובטח
+• אין שיתוף מידע עם צדדים שלישיים
+• גיבוי בטוח של כל הנתונים
+• מחיקת מידע לפי בקשת המשתמש
+
+📞 זכויות המשתמש:
+• צפייה במידע השמור עליך
+• עדכון או תיקון פרטים
+• מחיקת המידע (זכות לשכחה)
+• ייצוא הנתונים שלך
+
+⚖️ תנאי שימוש:
+• השימוש באפליקציה כפוף לחוקי ישראל
+• אסור שימוש לרעה במידע של משתמשים אחרים
+• החברה שומרת זכות לעדכן תנאים
+• צור קשר לשאלות או בקשות
+
+📅 עדכון אחרון: דצמבר 2024
+📧 לשאלות: privacy@transport-app.co.il`;
+    
+    alert(privacyPolicy);
+    
+    if (confirm('האם לפתוח את מדיניות הפרטיות המלאה באתר?')) {
+      window.open('https://transport-app.co.il/privacy', '_blank');
+    }
+  };
+
   // פונקציה לחישוב גיל
   const calculateAge = (birthDate) => {
     if (!birthDate) return null;
@@ -981,18 +1142,30 @@ const App = () => {
             React.createElement('span', { className: 'text-blue-600' }, '←')
           ),
           React.createElement('button', { 
-            onClick: () => alert('ייצוא נתונים בפיתוח'),
+            onClick: () => exportUserData(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'ייצוא נתונים'),
           React.createElement('button', { 
-            onClick: () => alert('פתיחת צ׳אט תמיכה'),
+            onClick: () => openSupportContact(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'צור קשר עם תמיכה'),
           React.createElement('button', { 
-            onClick: () => alert('מדיניות פרטיות'),
+            onClick: () => openPrivacyPolicy(),
             className: 'w-full text-right p-3 hover:bg-gray-50 rounded-lg border border-gray-200'
           }, 'מדיניות פרטיות')
         )
+      ),
+
+      // Reset Data Section
+      React.createElement('div', { className: 'bg-red-50 border border-red-200 rounded-lg p-4' },
+        React.createElement('h3', { className: 'font-medium mb-3 text-red-800' }, '⚠️ איפוס נתונים'),
+        React.createElement('p', { className: 'text-red-700 text-sm mb-4' },
+          'אפס את כל הנתונים באפליקציה וחזור להתחלה'
+        ),
+        React.createElement('button', { 
+          onClick: () => resetAppData(),
+          className: 'w-full bg-red-600 text-white rounded-lg py-3 font-medium hover:bg-red-700'
+        }, '🔄 אפס את כל הנתונים')
       ),
 
       React.createElement('button', { 
@@ -1151,7 +1324,7 @@ const App = () => {
               classItem.currentMembers < classItem.maxMembers ? (
                 React.createElement('button', {
                   onClick: () => joinGroup(classItem.id),
-                  className: 'flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium'
+                  className: 'flex-1 bg-blue-600 text-white py-3 px-2 rounded-lg hover:bg-blue-700 text-sm font-medium min-h-[48px] leading-tight'
                 }, '🤝 בקש להצטרף')
               ) : (
                 React.createElement('button', {
