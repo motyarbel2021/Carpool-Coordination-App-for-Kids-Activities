@@ -662,44 +662,51 @@ const App = () => {
 
   // First Time Setup Page - for new users to create their family
   const FirstTimeSetupPage = () => {
-    const [setupForm, setSetupForm] = useState({
-      familyName: '',
-      parent1Name: '',
-      parent1Phone: '',
-      parent1Email: '',
-      parent2Name: '',
-      parent2Phone: '',
-      parent2Email: ''
-    });
+    // Use refs instead of state to prevent re-renders and keyboard issues
+    const familyNameRef = useRef(null);
+    const parent1NameRef = useRef(null);
+    const parent1PhoneRef = useRef(null);
+    const parent1EmailRef = useRef(null);
+    const parent2NameRef = useRef(null);
+    const parent2PhoneRef = useRef(null);
+    const parent2EmailRef = useRef(null);
 
     const handleSubmit = (e) => {
       e.preventDefault();
       
-      if (!setupForm.familyName || !setupForm.parent1Name || !setupForm.parent1Phone) {
+      const familyName = familyNameRef.current?.value || '';
+      const parent1Name = parent1NameRef.current?.value || '';
+      const parent1Phone = parent1PhoneRef.current?.value || '';
+      const parent1Email = parent1EmailRef.current?.value || '';
+      const parent2Name = parent2NameRef.current?.value || '';
+      const parent2Phone = parent2PhoneRef.current?.value || '';
+      const parent2Email = parent2EmailRef.current?.value || '';
+      
+      if (!familyName || !parent1Name || !parent1Phone) {
         alert('אנא מלא את השדות החובה: שם משפחה, שם הורה ראשון וטלפון');
         return;
       }
 
       // Create the family data structure
       const newFamily = {
-        familyName: setupForm.familyName,
+        familyName: familyName,
         parents: {
           parent1: {
-            name: setupForm.parent1Name,
-            phone: setupForm.parent1Phone,
-            email: setupForm.parent1Email
+            name: parent1Name,
+            phone: parent1Phone,
+            email: parent1Email
           },
           parent2: {
-            name: setupForm.parent2Name,
-            phone: setupForm.parent2Phone,
-            email: setupForm.parent2Email
+            name: parent2Name,
+            phone: parent2Phone,
+            email: parent2Email
           }
         },
         children: []
       };
 
       setCurrentFamily(newFamily);
-      alert(`✅ ברוכים הבאים, משפחת ${setupForm.familyName}!`);
+      alert(`✅ ברוכים הבאים, משפחת ${familyName}!`);
     };
 
     return React.createElement('div', { className: 'max-w-2xl mx-auto space-y-6 p-4', dir: 'rtl' },
@@ -718,12 +725,16 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', {
+              ref: familyNameRef,
               type: 'text',
-              value: setupForm.familyName,
-              onChange: (e) => setSetupForm(prev => ({ ...prev, familyName: e.target.value })),
               placeholder: 'לוי, כהן, אברהם...',
               className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-              style: { fontSize: '16px' }, // Prevent iOS zoom
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'family-name',
               required: true
             })
           )
@@ -739,12 +750,16 @@ const App = () => {
                 React.createElement('span', { className: 'text-red-500' }, '*')
               ),
               React.createElement('input', {
+                ref: parent1NameRef,
                 type: 'text',
-                value: setupForm.parent1Name,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Name: e.target.value })),
                 placeholder: 'יוסי, דוד, משה...',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' }, // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'given-name',
                 required: true
               })
             ),
@@ -754,12 +769,17 @@ const App = () => {
                 React.createElement('span', { className: 'text-red-500' }, '*')
               ),
               React.createElement('input', {
+                ref: parent1PhoneRef,
                 type: 'tel',
-                value: setupForm.parent1Phone,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Phone: e.target.value })),
                 placeholder: '050-123-4567',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' }, // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'tel',
+                inputMode: 'tel',
                 required: true
               })
             ),
@@ -768,12 +788,16 @@ const App = () => {
                 'כתובת אימייל (רשות)'
               ),
               React.createElement('input', {
+                ref: parent1EmailRef,
                 type: 'email',
-                value: setupForm.parent1Email,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent1Email: e.target.value })),
                 placeholder: 'yossi@gmail.com',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' } // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'email'
               })
             )
           )
@@ -788,12 +812,16 @@ const App = () => {
                 'שם פרטי'
               ),
               React.createElement('input', {
+                ref: parent2NameRef,
                 type: 'text',
-                value: setupForm.parent2Name,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Name: e.target.value })),
                 placeholder: 'רחל, שרה, מרים...',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' } // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'given-name'
               })
             ),
             React.createElement('div', null,
@@ -801,12 +829,17 @@ const App = () => {
                 'מספר טלפון'
               ),
               React.createElement('input', {
+                ref: parent2PhoneRef,
                 type: 'tel',
-                value: setupForm.parent2Phone,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Phone: e.target.value })),
                 placeholder: '052-987-6543',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' } // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'tel',
+                inputMode: 'tel'
               })
             ),
             React.createElement('div', null,
@@ -814,12 +847,16 @@ const App = () => {
                 'כתובת אימייל'
               ),
               React.createElement('input', {
+                ref: parent2EmailRef,
                 type: 'email',
-                value: setupForm.parent2Email,
-                onChange: (e) => setSetupForm(prev => ({ ...prev, parent2Email: e.target.value })),
                 placeholder: 'rachel@gmail.com',
                 className: 'w-full p-3 border border-gray-300 rounded-lg text-right',
-                style: { fontSize: '16px' } // Prevent iOS zoom
+                style: { 
+                  fontSize: '16px', // Prevent iOS zoom
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                },
+                autoComplete: 'email'
               })
             )
           )
@@ -1225,7 +1262,28 @@ const App = () => {
   };
 
   // Settings Page Component
-  const SettingsPage = () => (
+  const SettingsPage = () => {
+    // Use refs instead of controlled inputs to prevent keyboard issues
+    const familyNameRef = useRef(null);
+    const parent1NameRef = useRef(null);
+    const parent1PhoneRef = useRef(null);
+    const parent1EmailRef = useRef(null);
+    const parent2NameRef = useRef(null);
+    const parent2PhoneRef = useRef(null);
+    const parent2EmailRef = useRef(null);
+
+    // Initialize default values when component mounts
+    useEffect(() => {
+      if (familyNameRef.current) familyNameRef.current.value = currentFamily.familyName || '';
+      if (parent1NameRef.current) parent1NameRef.current.value = currentFamily.parents?.parent1?.name || '';
+      if (parent1PhoneRef.current) parent1PhoneRef.current.value = currentFamily.parents?.parent1?.phone || '';
+      if (parent1EmailRef.current) parent1EmailRef.current.value = currentFamily.parents?.parent1?.email || '';
+      if (parent2NameRef.current) parent2NameRef.current.value = currentFamily.parents?.parent2?.name || '';
+      if (parent2PhoneRef.current) parent2PhoneRef.current.value = currentFamily.parents?.parent2?.phone || '';
+      if (parent2EmailRef.current) parent2EmailRef.current.value = currentFamily.parents?.parent2?.email || '';
+    }, [currentFamily]);
+
+    return (
     React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
       React.createElement('h2', { className: 'text-xl font-bold' }, 'הגדרות'),
       
@@ -1243,10 +1301,15 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', { 
+              ref: familyNameRef,
               type: 'text', 
-              value: currentFamily.familyName, 
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
-              style: { fontSize: '16px' }, // Prevent iOS zoom
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'family-name',
               required: true
             })
           ),
@@ -1261,11 +1324,16 @@ const App = () => {
                   React.createElement('span', { className: 'text-red-500' }, '*')
                 ),
                 React.createElement('input', { 
+                  ref: parent1NameRef,
                   type: 'text', 
                   placeholder: 'יוסי',
-                  defaultValue: currentFamily.parents.parent1.name,
                   className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
-                  style: { fontSize: '16px' }, // Prevent iOS zoom
+                  style: { 
+                    fontSize: '16px', // Prevent iOS zoom
+                    WebkitAppearance: 'none',
+                    appearance: 'none'
+                  },
+                  autoComplete: 'given-name',
                   required: true
                 })
               ),
@@ -1521,7 +1589,8 @@ const App = () => {
         'גרסה 2.0.0 • אפליקציית הסעות חוג'
       )
     )
-  );
+    );
+  };
 
   const WaitingRoomPage = () => {
     const cities = [...new Set(availableClasses.map(c => c.city))];
@@ -2608,6 +2677,25 @@ const App = () => {
   const ClassAddEditPage = () => {
     const isEditing = !!editingClass;
     
+    // Use refs to prevent mobile keyboard issues
+    const classNameRef = useRef(null);
+    const coachNameRef = useRef(null);
+    const coachPhoneRef = useRef(null);
+    const managerNameRef = useRef(null);
+    const managerPhoneRef = useRef(null);
+    const managerEmailRef = useRef(null);
+    
+    // Initialize values when component mounts
+    useEffect(() => {
+      if (classNameRef.current) classNameRef.current.value = classForm.name || '';
+      if (coachNameRef.current) coachNameRef.current.value = classForm.coachName || '';
+      if (coachPhoneRef.current) coachPhoneRef.current.value = classForm.coachPhone || '';
+      if (managerNameRef.current) managerNameRef.current.value = classForm.managerName || '';
+      if (managerPhoneRef.current) managerPhoneRef.current.value = classForm.managerPhone || '';
+      if (managerEmailRef.current) managerEmailRef.current.value = classForm.managerEmail || '';
+    }, [classForm]);
+    
+    
     const addAddress = () => {
       setClassForm(prev => ({
         ...prev,
@@ -2659,17 +2747,44 @@ const App = () => {
     };
 
     const handleSave = () => {
-      if (!classForm.name || !classForm.addresses[0].address || !classForm.coachName) {
-        alert('אנא מלא את השדות החובה');
+      const name = classNameRef.current?.value || '';
+      const coachName = coachNameRef.current?.value || '';
+      const coachPhone = coachPhoneRef.current?.value || '';
+      const managerName = managerNameRef.current?.value || '';
+      const managerPhone = managerPhoneRef.current?.value || '';
+      const managerEmail = managerEmailRef.current?.value || '';
+      
+      if (!name || !coachName) {
+        alert('אנא מלא את השדות החובה: שם חוג ושם מאמן');
         return;
       }
 
-      console.log('שמירת חוג:', classForm);
+      const newClass = {
+        id: Date.now(),
+        name: name,
+        coachName: coachName,
+        coachPhone: coachPhone,
+        managerName: managerName,
+        managerPhone: managerPhone,
+        managerEmail: managerEmail,
+        addresses: classForm.addresses, // Keep existing address logic for now
+        sessions: classForm.sessions // Keep existing sessions logic for now
+      };
+
+      console.log('שמירת חוג:', newClass);
       alert(isEditing ? 'החוג עודכן בהצלחה!' : 'החוג נוצר בהצלחה!');
       setCurrentView('settings');
       setIsEditingClass(false);
       setEditingClass(null);
+      
       // Reset form
+      if (classNameRef.current) classNameRef.current.value = '';
+      if (coachNameRef.current) coachNameRef.current.value = '';
+      if (coachPhoneRef.current) coachPhoneRef.current.value = '';
+      if (managerNameRef.current) managerNameRef.current.value = '';
+      if (managerPhoneRef.current) managerPhoneRef.current.value = '';
+      if (managerEmailRef.current) managerEmailRef.current.value = '';
+      
       setClassForm({
         name: '',
         addresses: [{ name: '', address: '' }],
@@ -2720,11 +2835,16 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', { 
+              ref: classNameRef,
               type: 'text', 
-              value: classForm.name,
-              onChange: (e) => setClassForm(prev => ({ ...prev, name: e.target.value })),
               placeholder: 'כדורסל, שחייה, ריקוד...',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'off',
               required: true
             })
           )
@@ -2882,11 +3002,16 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', { 
+              ref: coachNameRef,
               type: 'text', 
-              value: classForm.coachName,
-              onChange: (e) => setClassForm(prev => ({ ...prev, coachName: e.target.value })),
               placeholder: 'דוד כהן',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'name',
               required: true
             })
           ),
