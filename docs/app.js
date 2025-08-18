@@ -546,7 +546,7 @@ const App = () => {
     
     const birthdays = [];
     
-    familyData.children.forEach(child => {
+    (currentFamily.children || []).forEach(child => {
       if (child.birthDate) {
         const birth = new Date(child.birthDate);
         if (birth.getMonth() + 1 === todayMonth && birth.getDate() === todayDate) {
@@ -667,7 +667,7 @@ const App = () => {
     return React.createElement('div', { className: 'space-y-6', dir: 'rtl' },
       // Header
       React.createElement('div', { className: 'bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white' },
-        React.createElement('h1', { className: 'text-2xl font-bold mb-2' }, 'שלום, ' + familyData.familyName + '!'),
+        React.createElement('h1', { className: 'text-2xl font-bold mb-2' }, 'שלום, ' + currentFamily.familyName + '!'),
         React.createElement('p', { className: 'text-blue-100' }, 'ניהול חוגים וקואורדינציה')
       ),
 
@@ -695,19 +695,19 @@ const App = () => {
       React.createElement('div', { className: 'grid grid-cols-3 gap-4' },
         React.createElement('div', { className: 'bg-green-50 rounded-lg p-4 text-center border border-green-200' },
           React.createElement('div', { className: 'text-2xl font-bold text-green-600' },
-            familyData.children.reduce((total, child) => total + child.classes.length, 0)
+            currentFamily.children?.reduce((total, child) => total + (child.classes?.length || 0), 0) || 0
           ),
           React.createElement('div', { className: 'text-sm text-green-700' }, 'חוגים פעילים')
         ),
         React.createElement('div', { className: 'bg-blue-50 rounded-lg p-4 text-center border border-blue-200' },
-          React.createElement('div', { className: 'text-2xl font-bold text-blue-600' }, familyData.children.length),
+          React.createElement('div', { className: 'text-2xl font-bold text-blue-600' }, currentFamily.children?.length || 0),
           React.createElement('div', { className: 'text-sm text-blue-700' }, 'ילדים')
         ),
         React.createElement('div', { className: 'bg-purple-50 rounded-lg p-4 text-center border border-purple-200' },
           React.createElement('div', { className: 'text-2xl font-bold text-purple-600' },
-            familyData.children.reduce((total, child) => 
-              total + child.classes.reduce((classTotal, cls) => classTotal + cls.myTasks.length, 0), 0
-            )
+            currentFamily.children?.reduce((total, child) => 
+              total + (child.classes?.reduce((classTotal, cls) => classTotal + (cls.myTasks?.length || 0), 0) || 0), 0
+            ) || 0
           ),
           React.createElement('div', { className: 'text-sm text-purple-700' }, 'משימות השבוע')
         )
@@ -741,7 +741,7 @@ const App = () => {
           'הילדים והחוגים שלהם'
         ),
         
-        familyData.children.map(child => {
+        (currentFamily.children || []).map(child => {
           const age = calculateAge(child.birthDate);
           return React.createElement('div', { key: child.id, className: 'mb-6 last:mb-0' },
             React.createElement('div', { className: 'flex items-center justify-between mb-3' },
