@@ -1,252 +1,59 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ניהול הסעות החוג - פועל במובייל</title>
-    
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    
+    <title>בדיקה מיידית</title>
     <style>
-        /* MOBILE SCROLL FIX - Simple & Working */
-        html, body {
-            height: auto !important;
-            overflow: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-        
-        .app-container {
-            max-width: 448px;
-            margin: 0 auto;
-            background: #f9fafb;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-        
-        /* Override Tailwind classes that cause problems */
-        .min-h-screen {
-            min-height: auto !important;
-        }
-        
-        /* Mobile navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 8px 16px;
-            z-index: 1000;
-        }
-        
-        /* Working indicator */
-        .working-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #10b981;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #ff0000; /* אדום בוהק */
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 9999;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .test-box {
+            background: blue;
+            color: yellow;
+            padding: 30px;
+            margin: 20px 0;
+            border: 5px solid white;
+            font-weight: bold;
+            font-size: 28px;
+        }
+        
+        .scroll-box {
+            background: green;
+            color: white;
+            padding: 50px;
+            margin: 20px 0;
+            font-size: 32px;
+            border: 5px solid yellow;
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Working indicator -->
-    <div class="working-indicator">✅ פועל v1.2.0</div>
+<body>
+    <h1>🚨 בדיקה מיידית! 🚨</h1>
     
-    <div class="app-container">
-        <div class="p-4">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white mb-6">
-                <h1 class="text-2xl font-bold mb-2">שלום, משפחת כהן!</h1>
-                <p class="text-blue-100">ניהול חוגים וקואורדינציה</p>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-3 gap-4 mb-6">
-                <div class="bg-green-50 rounded-lg p-4 text-center border border-green-200">
-                    <div class="text-2xl font-bold text-green-600">1</div>
-                    <div class="text-sm text-green-700">חוגים פעילים</div>
-                </div>
-                <div class="bg-blue-50 rounded-lg p-4 text-center border border-blue-200">
-                    <div class="text-2xl font-bold text-blue-600">1</div>
-                    <div class="text-sm text-blue-700">ילדים</div>
-                </div>
-                <div class="bg-purple-50 rounded-lg p-4 text-center border border-purple-200">
-                    <div class="text-2xl font-bold text-purple-600">1</div>
-                    <div class="text-sm text-purple-700">משימות השבוע</div>
-                </div>
-            </div>
-
-            <!-- בדיקת גלילה -->
-            <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-                <h3 class="font-semibold mb-4 flex items-center">
-                    <i class="fas fa-mobile-alt w-5 h-5 ml-2 text-blue-500"></i>
-                    בדיקת גלילה במובייל
-                </h3>
-                
-                <div class="space-y-4">
-                    <!-- 12 קוביות צבעוניות -->
-                    <div class="bg-red-100 p-4 rounded-lg border border-red-300">
-                        <h4 class="font-medium text-red-800">תיבה 1 - אדום</h4>
-                        <p class="text-red-600 text-sm">אם אתה רואה את זה, התחלת לגלול</p>
-                    </div>
-                    
-                    <div class="bg-orange-100 p-4 rounded-lg border border-orange-300">
-                        <h4 class="font-medium text-orange-800">תיבה 2 - כתום</h4>
-                        <p class="text-orange-600 text-sm">הגלילה עובדת!</p>
-                    </div>
-                    
-                    <div class="bg-yellow-100 p-4 rounded-lg border border-yellow-300">
-                        <h4 class="font-medium text-yellow-800">תיבה 3 - צהוב</h4>
-                        <p class="text-yellow-600 text-sm">ממשיכים לגלול...</p>
-                    </div>
-                    
-                    <div class="bg-green-100 p-4 rounded-lg border border-green-300">
-                        <h4 class="font-medium text-green-800">תיבה 4 - ירוק</h4>
-                        <p class="text-green-600 text-sm">מצוין! הגלילה פועלת</p>
-                    </div>
-                    
-                    <div class="bg-blue-100 p-4 rounded-lg border border-blue-300">
-                        <h4 class="font-medium text-blue-800">תיבה 5 - כחול</h4>
-                        <p class="text-blue-600 text-sm">אמצע הדרך...</p>
-                    </div>
-                    
-                    <div class="bg-indigo-100 p-4 rounded-lg border border-indigo-300">
-                        <h4 class="font-medium text-indigo-800">תיבה 6 - סגול כהה</h4>
-                        <p class="text-indigo-600 text-sm">ממשיכים...</p>
-                    </div>
-                    
-                    <div class="bg-purple-100 p-4 rounded-lg border border-purple-300">
-                        <h4 class="font-medium text-purple-800">תיבה 7 - סגול</h4>
-                        <p class="text-purple-600 text-sm">עוד קצת...</p>
-                    </div>
-                    
-                    <div class="bg-pink-100 p-4 rounded-lg border border-pink-300">
-                        <h4 class="font-medium text-pink-800">תיבה 8 - ורוד</h4>
-                        <p class="text-pink-600 text-sm">כמעט שם...</p>
-                    </div>
-                    
-                    <div class="bg-gray-100 p-4 rounded-lg border border-gray-300">
-                        <h4 class="font-medium text-gray-800">תיבה 9 - אפור</h4>
-                        <p class="text-gray-600 text-sm">עוד מעט...</p>
-                    </div>
-                    
-                    <div class="bg-red-200 p-4 rounded-lg border border-red-400">
-                        <h4 class="font-medium text-red-800">תיבה 10 - אדום בהיר</h4>
-                        <p class="text-red-700 text-sm">כמעט הגענו...</p>
-                    </div>
-                    
-                    <div class="bg-green-200 p-4 rounded-lg border border-green-400">
-                        <h4 class="font-medium text-green-800">תיבה 11 - ירוק בהיר</h4>
-                        <p class="text-green-700 text-sm">קרובים לסוף...</p>
-                    </div>
-                    
-                    <div class="bg-blue-200 p-4 rounded-lg border border-blue-400">
-                        <h4 class="font-medium text-blue-800">תיבה 12 - כחול בהיר</h4>
-                        <p class="text-blue-700 text-sm">עוד רגע...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ילדים וחוגים -->
-            <div class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-                <h3 class="font-semibold mb-4 flex items-center">
-                    <i class="fas fa-users w-5 h-5 ml-2 text-blue-500"></i>
-                    הילדים והחוגים שלהם
-                </h3>
-                
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="font-medium text-lg">דני כהן</h4>
-                        <span class="text-sm text-gray-600">גיל 13</span>
-                    </div>
-                    
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                        <div class="font-medium text-blue-600">כדורסל</div>
-                        <div class="text-sm text-gray-600 mt-1">בית ספר רמת אביב</div>
-                        <div class="text-sm text-gray-500">ראשון, שלישי, חמישי 16:00-17:30</div>
-                        <div class="text-sm text-green-600 mt-1">1 משימות השבוע</div>
-                    </div>
-                    
-                    <button class="w-full mt-3 border border-dashed border-gray-300 rounded-lg p-4 text-gray-600 hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-plus w-5 h-5 mx-auto mb-1"></i>
-                        <div class="text-sm">הוסף חוג לדני</div>
-                    </button>
-                </div>
-                
-                <button class="w-full border border-dashed border-gray-300 rounded-lg p-4 text-gray-600 hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-plus w-5 h-5 mx-auto mb-1"></i>
-                    <div class="text-sm">הוסף ילד למשפחה</div>
-                </button>
-            </div>
-
-            <!-- הודעת הצלחה -->
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                <strong class="font-bold">🎉 מצוין! </strong>
-                <span class="block sm:inline">אם אתה רואה את ההודעה הזו - האפליקציה פועלת במובייל והגלילה עובדת!</span>
-            </div>
-
-            <!-- חדר המתנה -->
-            <div class="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl p-6 text-white mb-6">
-                <div class="flex items-center mb-3">
-                    <span class="text-2xl ml-3">🔍</span>
-                    <div>
-                        <h3 class="font-bold text-lg">מחפש קבוצת הסעות חדשה?</h3>
-                        <p class="text-green-100 text-sm">מצא הורים לחוגים חדשים או צור קבוצה משלך</p>
-                    </div>
-                </div>
-                <button class="bg-white bg-opacity-20 backdrop-blur-sm text-white border border-white border-opacity-30 rounded-lg px-6 py-3 font-medium hover:bg-opacity-30 transition-all">
-                    🚀 כנס לחדר המתנה
-                </button>
-            </div>
-        </div>
+    <div class="test-box">
+        אם אתה רואה את זה - הקבצים מתעדכנים!<br>
+        זמן: <script>document.write(new Date().toLocaleString());</script>
     </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="flex justify-around">
-            <button class="flex flex-col items-center py-2 px-3 rounded-lg text-blue-600 bg-blue-50">
-                <i class="fas fa-home w-5 h-5 mb-1"></i>
-                <span class="text-xs">בית</span>
-            </button>
-            <button class="flex flex-col items-center py-2 px-3 rounded-lg text-gray-600 hover:text-gray-800 hover:bg-gray-50">
-                <i class="fas fa-users w-5 h-5 mb-1"></i>
-                <span class="text-xs">חדר המתנה</span>
-            </button>
-            <button class="flex flex-col items-center py-2 px-3 rounded-lg text-gray-600 hover:text-gray-800 hover:bg-gray-50">
-                <i class="fas fa-bell w-5 h-5 mb-1"></i>
-                <span class="text-xs">עוזר החוגים</span>
-            </button>
-            <button class="flex flex-col items-center py-2 px-3 rounded-lg text-gray-600 hover:text-gray-800 hover:bg-gray-50">
-                <i class="fas fa-cog w-5 h-5 mb-1"></i>
-                <span class="text-xs">הגדרות</span>
-            </button>
-        </div>
-    </div>
-
+    
+    <div class="scroll-box">1 - תחילת בדיקת גלילה</div>
+    <div class="scroll-box">2 - אם אתה רואה את זה</div>
+    <div class="scroll-box">3 - הגלילה עובדת!</div>
+    <div class="scroll-box">4 - ממשיכים...</div>
+    <div class="scroll-box">5 - עוד קצת...</div>
+    <div class="scroll-box">6 - כמעט סיימנו...</div>
+    <div class="scroll-box">7 - ✅ הגלילה פועלת!</div>
+    
     <script>
-        console.log('✅ Simple App v1.2.0 - Working without React');
-        
-        // Test scroll after page load
-        setTimeout(() => {
-            const bodyHeight = document.body.scrollHeight;
-            const windowHeight = window.innerHeight;
-            console.log('📏 Body height:', bodyHeight, 'Window height:', windowHeight);
-            
-            if (bodyHeight > windowHeight) {
-                console.log('✅ Content is taller than screen - scrolling available');
-            } else {
-                console.log('⚠️ Content might be too short to require scrolling');
-            }
-        }, 1000);
+        alert('הקובץ נטען בהצלחה! זמן: ' + new Date().toLocaleString());
+        console.log('✅ Super simple test loaded successfully');
     </script>
 </body>
 </html>
