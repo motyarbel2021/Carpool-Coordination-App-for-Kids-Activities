@@ -108,10 +108,14 @@
 - **Class creation** **FULLY WORKING** (including addresses) ✅
 - **Settings editing** infrastructure ready ✅
 
-### 🏆 **BREAKTHROUGH: Address Field Fixed!**
+### 🏆 **BREAKTHROUGH: All Class Form Issues Fixed!**
 
-**The last major mobile keyboard issue has been resolved**:
+**Both major issues resolved**:
+1. **Mobile keyboard disappearing** ← Fixed with uncontrolled inputs ✅
+2. **Form fields clearing bug** ← Fixed useEffect dependency issue ✅
+
+**Technical Details**:
 - **Class Address Field** now uses uncontrolled inputs
 - **No more keyboard disappearing** when typing addresses  
-- **First address field** completely stable on mobile
-- **Additional addresses** still use fallback controlled inputs
+- **Form persistence** - fields keep user input when adding sessions
+- **useEffect fix** - only initializes on mount, doesn't override user input

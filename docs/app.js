@@ -2689,19 +2689,36 @@ const App = () => {
     const address0NameRef = useRef(null);
     const address0AddressRef = useRef(null);
     
-    // Initialize values when component mounts
+    // Initialize values ONLY when component mounts (not when classForm changes)
     useEffect(() => {
-      if (classNameRef.current) classNameRef.current.value = classForm.name || '';
-      if (coachNameRef.current) coachNameRef.current.value = classForm.coachName || '';
-      if (coachPhoneRef.current) coachPhoneRef.current.value = classForm.coachPhone || '';
-      if (managerNameRef.current) managerNameRef.current.value = classForm.managerName || '';
-      if (managerPhoneRef.current) managerPhoneRef.current.value = classForm.managerPhone || '';
-      if (managerEmailRef.current) managerEmailRef.current.value = classForm.managerEmail || '';
+      // Only initialize if fields are empty (don't override user input)
+      if (classNameRef.current && !classNameRef.current.value) {
+        classNameRef.current.value = classForm.name || '';
+      }
+      if (coachNameRef.current && !coachNameRef.current.value) {
+        coachNameRef.current.value = classForm.coachName || '';
+      }
+      if (coachPhoneRef.current && !coachPhoneRef.current.value) {
+        coachPhoneRef.current.value = classForm.coachPhone || '';
+      }
+      if (managerNameRef.current && !managerNameRef.current.value) {
+        managerNameRef.current.value = classForm.managerName || '';
+      }
+      if (managerPhoneRef.current && !managerPhoneRef.current.value) {
+        managerPhoneRef.current.value = classForm.managerPhone || '';
+      }
+      if (managerEmailRef.current && !managerEmailRef.current.value) {
+        managerEmailRef.current.value = classForm.managerEmail || '';
+      }
       
-      // Initialize first address
-      if (address0NameRef.current) address0NameRef.current.value = classForm.addresses[0]?.name || '';
-      if (address0AddressRef.current) address0AddressRef.current.value = classForm.addresses[0]?.address || '';
-    }, [classForm]);
+      // Initialize first address only if empty
+      if (address0NameRef.current && !address0NameRef.current.value) {
+        address0NameRef.current.value = classForm.addresses[0]?.name || '';
+      }
+      if (address0AddressRef.current && !address0AddressRef.current.value) {
+        address0AddressRef.current.value = classForm.addresses[0]?.address || '';
+      }
+    }, []); // Empty dependency array - runs only on mount!
     
     
     const addAddress = () => {
