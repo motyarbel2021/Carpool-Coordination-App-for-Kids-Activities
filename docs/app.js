@@ -1,4 +1,4 @@
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 
 // Icon Components (using Font Awesome classes instead of Lucide)
 const Icon = ({ name, className = "w-5 h-5" }) => (
@@ -2160,8 +2160,14 @@ const App = () => {
     );
   };
 
-  // Add Child Component
+  // Add Child Component - RADICAL FIX: Uncontrolled inputs
   const AddChildPage = () => {
+    // Use refs instead of state to prevent re-renders
+    const nameRef = useRef(null);
+    const birthDateRef = useRef(null);
+    const phoneRef = useRef(null);
+    const addressRef = useRef(null);
+    
     // Extra aggressive mobile keyboard fix for this page
     useEffect(() => {
       const inputs = document.querySelectorAll('input, textarea');
@@ -2187,37 +2193,24 @@ const App = () => {
         }
       };
     }, []);
-
-    // Stable onChange handlers to prevent re-renders
-    const handleNameChange = useCallback((e) => {
-      console.log('Name input changed:', e.target.value);
-      setChildForm(prev => ({ ...prev, name: e.target.value }));
-    }, []);
-
-    const handleBirthDateChange = useCallback((e) => {
-      setChildForm(prev => ({ ...prev, birthDate: e.target.value }));
-    }, []);
-
-    const handlePhoneChange = useCallback((e) => {
-      setChildForm(prev => ({ ...prev, phone: e.target.value }));
-    }, []);
-
-    const handleAddressChange = useCallback((e) => {
-      setChildForm(prev => ({ ...prev, address: e.target.value }));
-    }, []);
     
     const handleSaveChild = () => {
-      if (!childForm.name || !childForm.address) {
+      const name = nameRef.current?.value || '';
+      const birthDate = birthDateRef.current?.value || '';
+      const phone = phoneRef.current?.value || '';
+      const address = addressRef.current?.value || '';
+      
+      if (!name || !address) {
         alert('אנא מלא את השדות החובה');
         return;
       }
 
       const newChild = {
         id: Date.now(),
-        name: childForm.name,
-        birthDate: childForm.birthDate,
-        phone: childForm.phone,
-        address: childForm.address,
+        name: name,
+        birthDate: birthDate,
+        phone: phone,
+        address: address,
         classes: []
       };
 
@@ -2228,15 +2221,22 @@ const App = () => {
       }));
       
       console.log('הוספת ילד חדש:', newChild);
-      alert('הילד ' + childForm.name + ' נוסף בהצלחה למשפחה!');
+      alert('הילד ' + name + ' נוסף בהצלחה למשפחה!');
       
       // Reset form and navigate back
-      setChildForm({ name: '', birthDate: '', phone: '', address: '' });
+      if (nameRef.current) nameRef.current.value = '';
+      if (birthDateRef.current) birthDateRef.current.value = '';
+      if (phoneRef.current) phoneRef.current.value = '';
+      if (addressRef.current) addressRef.current.value = '';
       setCurrentView('family-home');
     };
 
     const handleCancel = () => {
-      setChildForm({ name: '', birthDate: '', phone: '', address: '' });
+      // Reset form using refs
+      if (nameRef.current) nameRef.current.value = '';
+      if (birthDateRef.current) birthDateRef.current.value = '';
+      if (phoneRef.current) phoneRef.current.value = '';
+      if (addressRef.current) addressRef.current.value = '';
       setCurrentView('family-home');
     };
 
@@ -2271,9 +2271,8 @@ const App = () => {
             ),
             React.createElement('input', { 
               key: 'child-name-input',
+              ref: nameRef,
               type: 'text', 
-              value: childForm.name,
-              onChange: handleNameChange,
               placeholder: 'דני כהן',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
               style: { 
@@ -2294,9 +2293,8 @@ const App = () => {
             ),
             React.createElement('input', { 
               key: 'child-birthdate-input',
+              ref: birthDateRef,
               type: 'date', 
-              value: childForm.birthDate,
-              onChange: handleBirthDateChange,
               className: 'w-full p-2 border border-gray-300 rounded-lg',
               style: { 
                 fontSize: '16px', // Prevent iOS zoom
@@ -2304,10 +2302,8 @@ const App = () => {
                 appearance: 'none'
               },
               autoComplete: 'bday'
-            }),
-            childForm.birthDate && React.createElement('div', { className: 'text-xs text-gray-500 mt-1' },
-              'גיל: ' + calculateAge(childForm.birthDate) + ' שנים'
-            )
+            })
+            // Age calculation removed for uncontrolled inputs
           ),
 
           React.createElement('div', null,
@@ -2316,9 +2312,8 @@ const App = () => {
             ),
             React.createElement('input', { 
               key: 'child-phone-input',
+              ref: phoneRef,
               type: 'tel', 
-              value: childForm.phone,
-              onChange: handlePhoneChange,
               placeholder: '050-111-2222',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
               style: { 
@@ -2338,9 +2333,8 @@ const App = () => {
             ),
             React.createElement('input', { 
               key: 'child-address-input',
+              ref: addressRef,
               type: 'text', 
-              value: childForm.address,
-              onChange: handleAddressChange,
               placeholder: 'רח\' הרצל 123, תל אביב',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
               style: { 
