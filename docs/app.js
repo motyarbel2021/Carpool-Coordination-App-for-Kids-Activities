@@ -2690,6 +2690,9 @@ const App = () => {
     const address0NameRef = useRef(null);
     const address0AddressRef = useRef(null);
     
+    // Manager self-checkbox state
+    const [isManagerSelf, setIsManagerSelf] = useState(false);
+    
     // LocalStorage functions for persistent data
     const saveToLocalStorage = useCallback((data) => {
       try {
@@ -2723,7 +2726,7 @@ const App = () => {
       }
     }, [STORAGE_KEY]);
     
-    // Save current form data to localStorage
+    // Save current form data to localStorage (including checkbox state)
     const saveCurrentData = useCallback(() => {
       const currentData = {
         name: classNameRef.current?.value || '',
@@ -2733,17 +2736,23 @@ const App = () => {
         managerPhone: managerPhoneRef.current?.value || '',
         managerEmail: managerEmailRef.current?.value || '',
         address0Name: address0NameRef.current?.value || '',
-        address0Address: address0AddressRef.current?.value || ''
+        address0Address: address0AddressRef.current?.value || '',
+        isManagerSelf: isManagerSelf // Save checkbox state
       };
       saveToLocalStorage(currentData);
       return currentData;
-    }, [saveToLocalStorage]);
+    }, [saveToLocalStorage, isManagerSelf]);
     
     // Restore form data from localStorage
     const restoreData = useCallback(() => {
       const savedData = loadFromLocalStorage();
       if (savedData) {
         console.log('🔄 Restoring data from localStorage:', savedData);
+        
+        // Restore checkbox state first
+        if (savedData.hasOwnProperty('isManagerSelf')) {
+          setIsManagerSelf(savedData.isManagerSelf);
+        }
         
         // Restore with multiple attempts
         const restore = () => {
@@ -2795,43 +2804,31 @@ const App = () => {
       }, 500); // Save 500ms after user stops typing
     }, [saveCurrentData]);
     
-    // Add event listeners to all inputs for auto-save
-    useEffect(() => {
-      const refs = [
-        classNameRef,
-        coachNameRef,
-        coachPhoneRef,
-        managerNameRef,
-        managerPhoneRef,
-        managerEmailRef,
-        address0NameRef,
-        address0AddressRef
-      ];
+    // Handle "I am the manager" checkbox
+    const handleManagerSelfChange = useCallback((isChecked) => {
+      console.log('👤 Manager self checkbox:', isChecked);
+      setIsManagerSelf(isChecked);
       
-      const handleInput = () => {
-        console.log('📝 Input detected - scheduling auto-save');
-        debouncedSave();
-      };
-      
-      refs.forEach(ref => {
-        if (ref.current) {
-          ref.current.addEventListener('input', handleInput);
-          ref.current.addEventListener('blur', handleInput);
+      if (isChecked) {
+        // Auto-fill manager details from current user (you can expand this)
+        // For now, we'll use coach details as fallback
+        if (managerNameRef.current && coachNameRef.current?.value) {
+          managerNameRef.current.value = coachNameRef.current.value;
         }
-      });
+        // You can add logic here to get actual user details from parent profile
+      } else {
+        // Clear manager fields when unchecked
+        if (managerNameRef.current) managerNameRef.current.value = '';
+        if (managerPhoneRef.current) managerPhoneRef.current.value = '';
+        if (managerEmailRef.current) managerEmailRef.current.value = '';
+      }
       
-      return () => {
-        refs.forEach(ref => {
-          if (ref.current) {
-            ref.current.removeEventListener('input', handleInput);
-            ref.current.removeEventListener('blur', handleInput);
-          }
-        });
-        if (autoSaveTimeoutRef.current) {
-          clearTimeout(autoSaveTimeoutRef.current);
-        }
-      };
-    }, [debouncedSave]);
+      // Save the current state including checkbox
+      saveCurrentData();
+    }, [saveCurrentData]);
+    
+    // Manual save only - no auto-save to prevent re-renders
+    // Save will happen before any state change operation
     
     // Initialize component on mount
     useEffect(() => {
@@ -2851,7 +2848,8 @@ const App = () => {
           managerPhone: classForm.managerPhone || '',
           managerEmail: classForm.managerEmail || '',
           address0Name: classForm.addresses[0]?.name || '',
-          address0Address: classForm.addresses[0]?.address || ''
+          address0Address: classForm.addresses[0]?.address || '',
+          isManagerSelf: false
         };
         
         // Set initial values to refs
@@ -2966,10 +2964,30 @@ const App = () => {
       const managerName = managerNameRef.current?.value || '';
       const managerPhone = managerPhoneRef.current?.value || '';
       const managerEmail = managerEmailRef.current?.value || '';
+      
+      // If "I am the manager" is checked, use current user info for manager
+      let finalManagerName = managerName;
+      let finalManagerPhone = managerPhone;
+      let finalManagerEmail = managerEmail;
+      
+      if (isManagerSelf) {
+        // Use parent profile data for manager (you can expand this to get actual parent data)
+        finalManagerName = name + ' (אני)'; // For now, use class name + "me"
+        // You can add logic here to fetch actual parent profile data
+        console.log('👤 Using self as manager');
+      }
       const address0Address = address0AddressRef.current?.value || '';
       
-      if (!name || !coachName || !address0Address) {
-        alert('אנא מלא את השדות החובה: שם חוג, שם מאמן וכתובת');
+      // Validation with manager self logic
+      const managerRequired = !isManagerSelf;
+      if (!name || !coachName || !address0Address || (managerRequired && !finalManagerName)) {
+        const missingFields = [];
+        if (!name) missingFields.push('שם חוג');
+        if (!coachName) missingFields.push('שם מאמן');
+        if (!address0Address) missingFields.push('כתובת');
+        if (managerRequired && !finalManagerName) missingFields.push('שם מנהל');
+        
+        alert('אנא מלא את השדות החובה: ' + missingFields.join(', '));
         return;
       }
 
@@ -2978,9 +2996,10 @@ const App = () => {
         name: name,
         coachName: coachName,
         coachPhone: coachPhone,
-        managerName: managerName,
-        managerPhone: managerPhone,
-        managerEmail: managerEmail,
+        managerName: finalManagerName,
+        managerPhone: finalManagerPhone,
+        managerEmail: finalManagerEmail,
+        isManagerSelf: isManagerSelf,
         addresses: [
           {
             name: address0NameRef.current?.value || '',
@@ -3308,6 +3327,25 @@ const App = () => {
         React.createElement('p', { className: 'text-sm text-blue-700 mb-4' },
           'מנהל החוג אחראי על תיאום הזמינות, זירוז הורים שלא מגיבים ופתירת בעיות.'
         ),
+        
+        // "I am the manager" checkbox
+        React.createElement('div', { className: 'mb-4 p-3 bg-green-50 border border-green-200 rounded-lg' },
+          React.createElement('label', { className: 'flex items-center space-x-3 cursor-pointer' },
+            React.createElement('input', {
+              type: 'checkbox',
+              checked: isManagerSelf,
+              onChange: (e) => handleManagerSelfChange(e.target.checked),
+              className: 'w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500'
+            }),
+            React.createElement('span', { className: 'text-sm font-medium text-green-800 mr-3' },
+              'אני מנהל החוג 👍'
+            )
+          ),
+          React.createElement('p', { className: 'text-xs text-green-700 mt-2 mr-8' },
+            'בחירה באפשרות זו תמלא אוטומטית את הפרטים שלך'
+          )
+        ),
+        
         React.createElement('div', { className: 'space-y-4' },
           React.createElement('div', null,
             React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' },
@@ -3317,15 +3355,16 @@ const App = () => {
             React.createElement('input', { 
               ref: managerNameRef,
               type: 'text', 
-              placeholder: 'יוסי כהן',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              placeholder: isManagerSelf ? 'הפרטים ימולאו אוטומטית' : 'יוסי כהן',
+              className: `w-full p-2 border border-gray-300 rounded-lg text-right ${isManagerSelf ? 'bg-gray-100' : ''}`,
               style: { 
                 fontSize: '16px', // Prevent iOS zoom
                 WebkitAppearance: 'none',
                 appearance: 'none'
               },
               autoComplete: 'name',
-              required: true
+              required: !isManagerSelf,
+              disabled: isManagerSelf
             })
           ),
           
@@ -3337,15 +3376,16 @@ const App = () => {
             React.createElement('input', { 
               ref: managerPhoneRef,
               type: 'tel', 
-              placeholder: '050-123-4567',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              placeholder: isManagerSelf ? 'הפרטים ימולאו אוטומטית' : '050-123-4567',
+              className: `w-full p-2 border border-gray-300 rounded-lg text-right ${isManagerSelf ? 'bg-gray-100' : ''}`,
               style: { 
                 fontSize: '16px', // Prevent iOS zoom
                 WebkitAppearance: 'none',
                 appearance: 'none'
               },
               autoComplete: 'tel',
-              required: true
+              required: !isManagerSelf,
+              disabled: isManagerSelf
             })
           ),
 
@@ -3356,14 +3396,15 @@ const App = () => {
             React.createElement('input', { 
               ref: managerEmailRef,
               type: 'email', 
-              placeholder: 'yossi@gmail.com',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              placeholder: isManagerSelf ? 'הפרטים ימולאו אוטומטית' : 'yossi@gmail.com',
+              className: `w-full p-2 border border-gray-300 rounded-lg text-right ${isManagerSelf ? 'bg-gray-100' : ''}`,
               style: { 
                 fontSize: '16px', // Prevent iOS zoom
                 WebkitAppearance: 'none',
                 appearance: 'none'
               },
-              autoComplete: 'email'
+              autoComplete: 'email',
+              disabled: isManagerSelf
             })
           )
         )
