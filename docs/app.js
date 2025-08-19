@@ -3287,11 +3287,16 @@ const App = () => {
               'טלפון המאמן'
             ),
             React.createElement('input', { 
+              ref: coachPhoneRef,
               type: 'tel', 
-              value: classForm.coachPhone,
-              onChange: (e) => setClassForm(prev => ({ ...prev, coachPhone: e.target.value })),
               placeholder: '052-987-6543',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'tel'
             })
           )
         )
@@ -3310,11 +3315,16 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', { 
+              ref: managerNameRef,
               type: 'text', 
-              value: classForm.managerName,
-              onChange: (e) => setClassForm(prev => ({ ...prev, managerName: e.target.value })),
               placeholder: 'יוסי כהן',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'name',
               required: true
             })
           ),
@@ -3325,11 +3335,16 @@ const App = () => {
               React.createElement('span', { className: 'text-red-500' }, '*')
             ),
             React.createElement('input', { 
+              ref: managerPhoneRef,
               type: 'tel', 
-              value: classForm.managerPhone,
-              onChange: (e) => setClassForm(prev => ({ ...prev, managerPhone: e.target.value })),
               placeholder: '050-123-4567',
               className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'tel',
               required: true
             })
           ),
@@ -3339,11 +3354,16 @@ const App = () => {
               'אימייל המנהל (רשות)'
             ),
             React.createElement('input', { 
+              ref: managerEmailRef,
               type: 'email', 
-              value: classForm.managerEmail,
-              onChange: (e) => setClassForm(prev => ({ ...prev, managerEmail: e.target.value })),
               placeholder: 'yossi@gmail.com',
-              className: 'w-full p-2 border border-gray-300 rounded-lg text-right'
+              className: 'w-full p-2 border border-gray-300 rounded-lg text-right',
+              style: { 
+                fontSize: '16px', // Prevent iOS zoom
+                WebkitAppearance: 'none',
+                appearance: 'none'
+              },
+              autoComplete: 'email'
             })
           )
         )
